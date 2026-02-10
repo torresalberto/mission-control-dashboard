@@ -1,7 +1,7 @@
 // Project management database operations - Vercel-compatible
-import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite';
-import path from 'path';
+// DEFERRED LOADING: No database operations during build
+
+import type { Database } from 'sqlite3';
 
 export interface Project {
   id: number;
@@ -25,29 +25,124 @@ export interface ProjectSuggestion {
   acted_at: string | null;
 }
 
-// Vercel-compatible DB path
+export interface ProjectWithSuggestions extends Project {
+  suggestions: ProjectSuggestion[];
+}
+
+// Lazy load sqlite3 only when needed (NOT at build time)
+async function getSqliteModule() {
+  const { open } = await import('sqlite');
+  const sqlite3 = await import('sqlite3');
+  return { open, sqlite3 };
+}
+
+// Detect if we're in build phase
+function isBuildPhase(): boolean {
+  return process.env.NEXT_PHASE === 'phase-production-build' || 
+         process.env.VERCEL_ENV === 'production' && !process.env.VERCEL_URL;
+}
+
+// Get database path based on environment
 function getDbPath(): string {
-  // Serverless environments (Vercel): Use /tmp
-  // Local: Use project directory
+  // Vercel: /tmp is writable
   if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
     return '/tmp/mission-control.db';
   }
-  return path.resolve(process.cwd(), 'mission-control.db');
+  // Local development
+  return require('path').resolve(process.cwd(), 'mission-control.db');
 }
 
-// Database singleton
-let dbInstance: Database<sqlite3.Database, sqlite3.Statement> | null = null;
+// Database connection cache
+let dbPromise: Promise<any> | null = null;
 
-// Open database connection
-export async function getDb(): Promise<Database<sqlite3.Database, sqlite3.Statement>> {
-  if (dbInstance) return dbInstance;
+// Lazy database initialization - never called during build
+async function getDbLazy() {
+  if (dbPromise) return dbPromise;
   
-  dbInstance = await open({
-    filename: getDbPath(),
-    driver: sqlite3.Database
-  });
+  // During build, return null
+  if (isBuildPhase()) {
+    console.log('[DB] Build phase - skipping database init');
+    throw new Error('Database not available during build');
+  }
   
-  return dbInstance;
+  dbPromise = (async () => {
+    const { open, sqlite3 } = await getSqliteModule();
+    const dbPath = getDbPath();
+    
+    console.log('[DB] Connecting to:', dbPath);
+    
+    const db = await open({
+      filename: dbPath,
+      driver: sqlite3.default.Database
+    });
+    
+    // Initialize schema
+    await initSchema(db);
+    
+    return db;
+  })();
+  
+  return dbPromise;
+}
+
+async function initSchema(db: any) {
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS projects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT,
+      status TEXT DEFAULT 'active',
+      progress INTEGER DEFAULT 0,
+      last_activity TEXT,
+      config_json TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS project_suggestions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      project_id INTEGER,
+      suggestion_type TEXT,
+      title TEXT,
+      description TEXT,
+      confidence INTEGER,
+      status TEXT DEFAULT 'pending',
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      acted_at TEXT,
+      FOREIGN KEY (project_id) REFERENCES projects(id)
+    )
+  `);
+  
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS activity_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      action TEXT,
+      details TEXT,
+      timestamp TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS scheduled_tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      description TEXT,
+      priority TEXT,
+      due_date TEXT,
+      completed BOOLEAN DEFAULT 0
+    )
+  `);
+}
+
+// Safe getDb that handles build phase
+export async function getDb() {
+  try {
+    return await getDbLazy();
+  } catch (e) {
+    console.error('[DB] Failed to get database:', e);
+    throw e;
+  }
 }
 
 // Get all projects with their suggestions
@@ -58,7 +153,7 @@ export async function getAllProjects(): Promise<ProjectWithSuggestions[]> {
   
   const projectsWithSuggestions: ProjectWithSuggestions[] = [];
   
-  for (const project of projects) {
+  for (const project of projects || []) {
     const suggestions = await db.all<ProjectSuggestion[]>(
       'SELECT * FROM project_suggestions WHERE project_id = ? ORDER BY confidence DESC',
       project.id
@@ -140,7 +235,9 @@ export async function updateProject(
     values.push(data.progress);
   }
   
-  fields.push('last_activity = datetime(\'now\')');
+  if (fields.length === 0) return getProjectById(id);
+  
+  fields.push("last_activity = datetime('now')");
   values.push(id);
   
   await db.run(
@@ -198,8 +295,4 @@ export async function updateSuggestionStatus(
     'SELECT * FROM project_suggestions WHERE id = ?',
     id
   );
-}
-
-export interface ProjectWithSuggestions extends Project {
-  suggestions: ProjectSuggestion[];
 }

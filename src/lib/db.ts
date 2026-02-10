@@ -1,81 +1,51 @@
-import sqlite3 from 'sqlite3';
-import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+// Database initialization - Deferred loading for Vercel compatibility
+// This module defers all database operations until request time (NOT build time)
 
-// Detect environment
-const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+// Detect build phase
+const isBuildPhase = typeof window === 'undefined' && 
+  (process.env.NEXT_PHASE === 'phase-production-build' || 
+   process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL);
 
-let db: sqlite3.Database | null = null;
-let isInitialized = false;
-
-// Vercel: Use /tmp for ephemeral storage
-// Local: Use workspace directory
-function getDbPath(): string {
-  if (process.env.DATABASE_URL) {
-    // External database (e.g., PlanetScale, Supabase)
-    return process.env.DATABASE_URL;
-  }
-  
-  if (isServerless) {
-    // Serverless: /tmp is writable
+// Return a stub during build that creates real DB at runtime
+export function getDbPath(): string {
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
     return '/tmp/mission-control.db';
   }
-  
-  // Local development
-  return join('/home/alb/.openclaw/workspace/mission-control', 'mission-control.db');
+  return '/home/alb/.openclaw/workspace/mission-control/mission-control.db';
 }
 
-function ensureDir(dir: string) {
-  if (!existsSync(dir)) {
-    try {
-      mkdirSync(dir, { recursive: true });
-    } catch (e) {
-      // Directory might already exist or /tmp is auto-created
-    }
+// During build, return a mock that prevents errors
+// At runtime, returns the actual path
+export function initDb(): any {
+  if (isBuildPhase) {
+    console.log('[DB] Build phase - returning stub');
+    return null;
   }
-}
-
-export function initDb(): sqlite3.Database | null {
-  if (isInitialized) return db;
   
-  const dbPath = getDbPath();
+  // Lazy load sqlite3 only at runtime
+  const sqlite3 = require('sqlite3');
+  const path = getDbPath();
   
-  // Ensure directory (skip for /tmp)
-  if (!isServerless) {
-    const dir = dbPath.substring(0, dbPath.lastIndexOf('/'));
-    ensureDir(dir);
-  }
+  console.log('[DB] Initializing:', path);
   
   try {
-    // Open database
-    db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-      if (err) {
-        console.error('[DB] Failed to open:', err.message);
-        return;
-      }
-      console.log('[DB] Connected to', dbPath);
+    const db = new sqlite3.Database(path, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+    
+    db.run('PRAGMA journal_mode = WAL', (err: any) => {
+      if (err) console.error('[DB] WAL error:', err);
     });
     
-    // Enable WAL mode for better concurrency
-    db.run('PRAGMA journal_mode = WAL', (err) => {
-      if (err) console.error('[DB] WAL mode failed:', err);
-    });
+    initTables(db);
     
-    // Initialize schema
-    initSchema(db);
-    
-    isInitialized = true;
     return db;
-    
-  } catch (err) {
-    console.error('[DB] Initialization error:', err);
+  } catch (e) {
+    console.error('[DB] Init error:', e);
     return null;
   }
 }
 
-function initSchema(database: sqlite3.Database) {
-  database.run(`
+function initTables(db: any) {
+  db.run(`
     CREATE TABLE IF NOT EXISTS projects (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -86,11 +56,9 @@ function initSchema(database: sqlite3.Database) {
       config_json TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
-  `, (err) => {
-    if (err) console.error('[DB] Projects table:', err);
-  });
+  `);
   
-  database.run(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS project_suggestions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       project_id INTEGER,
@@ -103,22 +71,18 @@ function initSchema(database: sqlite3.Database) {
       acted_at TEXT,
       FOREIGN KEY (project_id) REFERENCES projects(id)
     )
-  `, (err) => {
-    if (err) console.error('[DB] Suggestions table:', err);
-  });
+  `);
   
-  database.run(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS activity_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       action TEXT,
       details TEXT,
       timestamp TEXT DEFAULT CURRENT_TIMESTAMP
     )
-  `, (err) => {
-    if (err) console.error('[DB] Activity table:', err);
-  });
+  `);
   
-  database.run(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS scheduled_tasks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT,
@@ -127,21 +91,17 @@ function initSchema(database: sqlite3.Database) {
       due_date TEXT,
       completed BOOLEAN DEFAULT 0
     )
-  `, (err) => {
-    if (err) console.error('[DB] Tasks table:', err);
-  });
+  `);
 }
 
-// Safe database getter - never returns null
-export default function getDb(): sqlite3.Database {
-  const database = initDb();
-  if (!database) {
-    throw new Error('Database initialization failed');
+// Safe getter - throws if db unavailable (API will handle error)
+export default function getDb(): any {
+  const db = initDb();
+  if (!db) {
+    throw new Error('Database not available');
   }
-  return database;
+  return db;
 }
 
-// Check if database is ready
-export function isDbReady(): boolean {
-  return isInitialized && db !== null;
-}
+// Check if in build phase
+export { isBuildPhase };

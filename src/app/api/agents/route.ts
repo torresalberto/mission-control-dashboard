@@ -5,8 +5,13 @@ export async function GET(): Promise<NextResponse> {
   try {
     const agents = getAgentStatus();
     return NextResponse.json({ agents, count: agents.length });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching agents:', error);
-    return NextResponse.json({ error: 'Failed to fetch agents' }, { status: 500 });
+    // Return static fallback during build
+    return NextResponse.json({ 
+      agents: [], 
+      count: 0,
+      error: error.message || 'Failed to fetch agents'
+    });
   }
 }

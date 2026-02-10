@@ -21,3 +21,13 @@
 ✓ Database initialized
  ✓ Compiled in 148ms (268 modules)
 [DB] Connected to /home/alb/.openclaw/workspace/mission-control/mission-control.db
+ ✓ Compiled /api/agents/route in 105ms (265 modules)
+ ✓ Compiled in 350ms (265 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /api/activity/route in 115ms (266 modules)
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+ ✓ Compiled in 150ms (265 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
