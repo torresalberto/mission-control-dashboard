@@ -35,3 +35,18 @@
  ✓ Compiled /api/activity/route in 53ms (269 modules)
 [DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
 [DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+ ✓ Compiled /page in 278ms (256 modules)
+ ✓ Compiled /api/activity/route in 79ms (280 modules)
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+[DB] Initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+   ▲ Next.js 14.0.0
+   - Local:        http://localhost:3000
+
+ ✓ Ready in 1960ms
