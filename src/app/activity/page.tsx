@@ -40,8 +40,8 @@ export default function ActivityPage() {
       setLoading(true)
       setError(null)
       
-      // Fetch from live endpoint
-      const response = await fetch('/api/activity/live?v=' + Date.now())
+      // Fetch from REAL endpoint
+      const response = await fetch('/api/activity/real?v=' + Date.now())
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

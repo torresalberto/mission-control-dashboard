@@ -85,41 +85,13 @@ export default function ProjectsPage() {
     };
   }, []);
   
-  // Auto-seed if empty
   useEffect(() => {
     if (!loading && projects.length === 0) {
       console.log('Projects empty - auto-seeding...');
-      handleSeedDatabase();
     }
   }, [loading, projects]);
 
-  const handleCreateSampleProject = async () => {
-    try {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'NexAgua Marketing Campaign',
-          description: 'Comprehensive digital marketing strategy for NexAgua water optimization solutions',
-          status: 'active',
-          progress: 35,
-          config_json: JSON.stringify({
-            targetAudience: 'SaaS businesses',
-            channels: ['LinkedIn', 'Email', 'Blog'],
-            goal: 'Generate 100 qualified leads'
-          })
-        })
-      });
 
-      if (response.ok) {
-        loadProjects();
-      }
-    } catch (error) {
-      console.error('Error creating sample project:', error);
-    }
-  };
-
-  const handleSeedDatabase = async () => {
     try {
       const response = await fetch('/api/seed', {
         method: 'POST',
@@ -192,11 +164,9 @@ export default function ProjectsPage() {
                 Refresh
               </button>
               <button
-                onClick={handleSeedDatabase}
                 className="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700"
               >
                 <Database className="w-4 h-4 mr-2" />
-                Seed Database
               </button>
               </div>
           </div>
@@ -276,11 +246,9 @@ export default function ProjectsPage() {
                 </p>
                 <div className="flex justify-center space-x-3">
                   <button
-                    onClick={handleSeedDatabase}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700"
                   >
                     <Database className="w-4 h-4 mr-2" />
-                    Seed Database
                   </button>
                 </div>
               </div>

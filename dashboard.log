@@ -157,3 +157,444 @@ Import trace for requested module:
  ✓ Compiled in 441ms (279 modules)
  ✓ Compiled in 286ms (279 modules)
  ✓ Compiled in 255ms (279 modules)
+ ✓ Compiled in 440ms (279 modules)
+ ✓ Compiled in 169ms (279 modules)
+ ⨯ ./src/app/projects/page.tsx
+Error: 
+  [31mx[0m await isn't allowed in non-async function
+    ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:93:1]
+ [2m93[0m | 
+ [2m94[0m | 
+ [2m95[0m |     try {
+ [2m96[0m |       const response = await fetch('/api/seed', {
+    : [31;1m                             ^^^^^[0m
+ [2m97[0m |         method: 'POST',
+ [2m98[0m |         headers: { 'Content-Type': 'application/json' }
+ [2m99[0m |       });
+    `----
+
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:120:1]
+ [2m120[0m |       const otherProjects = projects.filter(p => !['active', 'completed'].includes(p.status));
+ [2m121[0m |     
+ [2m122[0m |       if (loading) {
+ [2m123[0m | [31;1m,[0m[31;1m-[0m[31;1m>[0m     return (
+ [2m124[0m | [31;1m|[0m         <div className="min-h-screen bg-gray-50 p-8">
+ [2m125[0m | [31;1m|[0m           <div className="max-w-7xl mx-auto">
+ [2m126[0m | [31;1m|[0m             <div className="animate-pulse">
+ [2m127[0m | [31;1m|[0m               <div className="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
+ [2m128[0m | [31;1m|[0m               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ [2m129[0m | [31;1m|[0m                 {[1,2,3].map(i => (
+ [2m130[0m | [31;1m|[0m                   <div key={i} className="bg-white rounded-lg shadow-md p-6">
+ [2m131[0m | [31;1m|[0m                     <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+ [2m132[0m | [31;1m|[0m                     <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+ [2m133[0m | [31;1m|[0m                     <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+ [2m134[0m | [31;1m|[0m                   </div>
+ [2m135[0m | [31;1m|[0m                 ))}
+ [2m136[0m | [31;1m|[0m               </div>
+ [2m137[0m | [31;1m|[0m             </div>
+ [2m138[0m | [31;1m|[0m           </div>
+ [2m139[0m | [31;1m|[0m         </div>
+ [2m140[0m | [31;1m`[0m[31;1m-[0m[31;1m>[0m     );
+ [2m141[0m |       }
+ [2m142[0m |     
+ [2m143[0m |       return (
+     `----
+
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:140:1]
+ [2m140[0m |         );
+ [2m141[0m |       }
+ [2m142[0m |     
+ [2m143[0m | [31;1m,[0m[31;1m-[0m[31;1m>[0m   return (
+ [2m144[0m | [31;1m|[0m       <div className="min-h-screen bg-gray-50">
+ [2m145[0m | [31;1m|[0m         <Toaster position="top-right" />
+ [2m146[0m | [31;1m|[0m         
+ [2m147[0m | [31;1m|[0m         {/* Header */}
+ [2m148[0m | [31;1m|[0m         <div className="bg-white shadow-sm border-b">
+ [2m149[0m | [31;1m|[0m           <div className="max-w-7xl mx-auto px-8 py-4">
+ [2m150[0m | [31;1m|[0m             <div className="flex justify-between items-center">
+ [2m151[0m | [31;1m|[0m               <div>
+ [2m152[0m | [31;1m|[0m                 <h1 className="text-2xl font-bold text-gray-900">Project Workflow Dashboard</h1>
+ [2m153[0m | [31;1m|[0m                 <p className="text-sm text-gray-600 mt-1">
+ [2m154[0m | [31;1m|[0m                   AI-powered project management with intelligent suggestions
+ [2m155[0m | [31;1m|[0m                 </p>
+ [2m156[0m | [31;1m|[0m               </div>
+ [2m157[0m | [31;1m|[0m               <div className="flex space-x-3">
+ [2m158[0m | [31;1m|[0m                 <button
+ [2m159[0m | [31;1m|[0m                   onClick={handleRefresh}
+ [2m160[0m | [31;1m|[0m                   disabled={refreshing}
+ [2m161[0m | [31;1m|[0m                   className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+ [2m162[0m | [31;1m|[0m                 >
+ [2m163[0m | [31;1m|[0m                   <RefreshCcw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+ [2m164[0m | [31;1m|[0m                   Refresh
+ [2m165[0m | [31;1m|[0m                 </button>
+ [2m166[0m | [31;1m|[0m                 <button
+ [2m167[0m | [31;1m|[0m                   className="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700"
+ [2m168[0m | [31;1m|[0m                 >
+ [2m169[0m | [31;1m|[0m                   <Database className="w-4 h-4 mr-2" />
+ [2m170[0m | [31;1m|[0m                 </button>
+ [2m171[0m | [31;1m|[0m                 </div>
+ [2m172[0m | [31;1m|[0m             </div>
+ [2m173[0m | [31;1m|[0m           </div>
+ [2m174[0m | [31;1m|[0m         </div>
+ [2m175[0m | [31;1m|[0m   
+ [2m176[0m | [31;1m|[0m         {/* Main Content */}
+ [2m177[0m | [31;1m|[0m         <div className="max-w-7xl mx-auto px-8 py-8">
+ [2m178[0m | [31;1m|[0m           {/* Stats Overview */}
+ [2m179[0m | [31;1m|[0m           {/* Task Queue Section */}
+ [2m180[0m | [31;1m|[0m           {(pendingTasks > 0 || runningTasks > 0) && (
+ [2m181[0m | [31;1m|[0m             <div className="mb-8 bg-white rounded-lg shadow-sm p-6">
+ [2m182[0m | [31;1m|[0m               <div className="flex justify-between items-center mb-4">
+ [2m183[0m | [31;1m|[0m                 <div>
+ [2m184[0m | [31;1m|[0m                   <h2 className="text-lg font-semibold text-gray-900">Task Queue</h2>
+ [2m185[0m | [31;1m|[0m                   <p className="text-sm text-gray-600">Monitor and execute pending tasks</p>
+ [2m186[0m | [31;1m|[0m                 </div>
+ [2m187[0m | [31;1m|[0m                 {pendingTasks > 0 && (
+ [2m188[0m | [31;1m|[0m                   <button
+ [2m189[0m | [31;1m|[0m                     onClick={executeAllPendingTasks}
+ [2m190[0m | [31;1m|[0m                     className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+ [2m191[0m | [31;1m|[0m                   >
+ [2m192[0m | [31;1m|[0m                     <Play className="w-4 h-4 mr-2" />
+ [2m193[0m | [31;1m|[0m                     Run {pendingTasks} Pending Tasks
+ [2m194[0m | [31;1m|[0m                   </button>
+ [2m195[0m | [31;1m|[0m                 )}
+ [2m196[0m | [31;1m|[0m               </div>
+ [2m197[0m | [31;1m|[0m               
+ [2m198[0m | [31;1m|[0m               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ [2m199[0m | [31;1m|[0m                 <div className="text-center p-4 bg-gray-50 rounded-lg">
+ [2m200[0m | [31;1m|[0m                   <div className="text-2xl font-bold text-gray-900">{pendingTasks}</div>
+ [2m201[0m | [31;1m|[0m                   <div className="text-sm text-gray-600">Pending Tasks</div>
+ [2m202[0m | [31;1m|[0m                 </div>
+ [2m203[0m | [31;1m|[0m                 <div className="text-center p-4 bg-green-50 rounded-lg">
+ [2m204[0m | [31;1m|[0m                   <div className="text-2xl font-bold text-green-600">{runningTasks}</div>
+ [2m205[0m | [31;1m|[0m                   <div className="text-sm text-gray-600">Running Tasks</div>
+ [2m206[0m | [31;1m|[0m                 </div>
+ [2m207[0m | [31;1m|[0m                 <div className="text-center p-4 bg-blue-50 rounded-lg">
+ [2m208[0m | [31;1m|[0m                   <div className="text-2xl font-bold text-blue-600">{(runningTasks / (pendingTasks + runningTasks || 1) * 100).toFixed(0)}%</div>
+ [2m209[0m | [31;1m|[0m                   <div className="text-sm text-gray-600">Completion Rate</div>
+ [2m210[0m | [31;1m|[0m                 </div>
+ [2m211[0m | [31;1m|[0m               </div>
+ [2m212[0m | [31;1m|[0m             </div>
+ [2m213[0m | [31;1m|[0m           )}
+ [2m214[0m | [31;1m|[0m   
+ [2m215[0m | [31;1m|[0m           {/* Stats Overview */}
+ [2m216[0m | [31;1m|[0m           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+ [2m217[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m218[0m | [31;1m|[0m               <div className="text-2xl font-bold text-gray-900">{projects.length}</div>
+ [2m219[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Total Projects</div>
+ [2m220[0m | [31;1m|[0m             </div>
+ [2m221[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m222[0m | [31;1m|[0m               <div className="text-2xl font-bold text-green-600">{activeProjects.length}</div>
+ [2m223[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Active</div>
+ [2m224[0m | [31;1m|[0m             </div>
+ [2m225[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m226[0m | [31;1m|[0m               <div className="text-2xl font-bold text-blue-600">{completedProjects.length}</div>
+ [2m227[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Completed</div>
+ [2m228[0m | [31;1m|[0m             </div>
+ [2m229[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m230[0m | [31;1m|[0m               <div className="text-2xl font-bold text-purple-600">
+ [2m231[0m | [31;1m|[0m                 {projects.reduce((total, p) => total + p.suggestions.filter(s => s.status === 'pending').length, 0)}
+ [2m232[0m | [31;1m|[0m               </div>
+ [2m233[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Pending AI Suggestions</div>
+ [2m234[0m | [31;1m|[0m             </div>
+ [2m235[0m | [31;1m|[0m           </div>
+ [2m236[0m | [31;1m|[0m   
+ [2m237[0m | [31;1m|[0m           {/* Projects Grid */}
+ [2m238[0m | [31;1m|[0m           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+ [2m239[0m | [31;1m|[0m             {projects.length === 0 ? (
+ [2m240[0m | [31;1m|[0m               <div className="col-span-full">
+ [2m241[0m | [31;1m|[0m                 <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+ [2m242[0m | [31;1m|[0m                   <Plus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+ [2m243[0m | [31;1m|[0m                   <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
+ [2m244[0m | [31;1m|[0m                   <p className="text-gray-600 mb-4">
+ [2m245[0m | [31;1m|[0m                     Get started by creating your first project with AI suggestions
+ [2m246[0m | [31;1m|[0m                   </p>
+ [2m247[0m | [31;1m|[0m                   <div className="flex justify-center space-x-3">
+ [2m248[0m | [31;1m|[0m                     <button
+ [2m249[0m | [31;1m|[0m                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700"
+ [2m250[0m | [31;1m|[0m                     >
+ [2m251[0m | [31;1m|[0m                       <Database className="w-4 h-4 mr-2" />
+ [2m252[0m | [31;1m|[0m                     </button>
+ [2m253[0m | [31;1m|[0m                   </div>
+ [2m254[0m | [31;1m|[0m                 </div>
+ [2m255[0m | [31;1m|[0m               </div>
+ [2m256[0m | [31;1m|[0m             ) : (
+ [2m257[0m | [31;1m|[0m               projects.map(project => (
+ [2m258[0m | [31;1m|[0m                 <EnhancedProjectCard key={project.id} project={project} onUpdate={loadProjects} />
+ [2m259[0m | [31;1m|[0m               ))
+ [2m260[0m | [31;1m|[0m             )}
+ [2m261[0m | [31;1m|[0m           </div>
+ [2m262[0m | [31;1m|[0m   
+ [2m263[0m | [31;1m|[0m           {/* Analytics Summary */}
+ [2m264[0m | [31;1m|[0m           <div className="mt-12 bg-white rounded-lg shadow-sm p-6">
+ [2m265[0m | [31;1m|[0m             <h2 className="text-lg font-semibold text-gray-900 mb-4">AI Suggestions Analytics</h2>
+ [2m266[0m | [31;1m|[0m             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+ [2m267[0m | [31;1m|[0m               <div>
+ [2m268[0m | [31;1m|[0m                 <div className="text-3xl font-bold text-green-600">
+ [2m269[0m | [31;1m|[0m                   {projects.reduce((total, p) => 
+ [2m270[0m | [31;1m|[0m                     total + p.suggestions.filter(s => s.status === 'approved').length, 0
+ [2m271[0m | [31;1m|[0m                   )}
+ [2m272[0m | [31;1m|[0m                 </div>
+ [2m273[0m | [31;1m|[0m                 <div className="text-sm text-gray-600">Suggestions Approved</div>
+ [2m274[0m | [31;1m|[0m               </div>
+ [2m275[0m | [31;1m|[0m               <div>
+ [2m276[0m | [31;1m|[0m                 <div className="text-3xl font-bold text-red-600">
+ [2m277[0m | [31;1m|[0m                   {projects.reduce((total, p) => 
+ [2m278[0m | [31;1m|[0m                     total + p.suggestions.filter(s => s.status === 'declined').length, 0
+ [2m279[0m | [31;1m|[0m                   )}
+ [2m280[0m | [31;1m|[0m                 </div>
+ [2m281[0m | [31;1m|[0m                 <div className="text-sm text-gray-600">Suggestions Declined</div>
+ [2m282[0m | [31;1m|[0m               </div>
+ [2m283[0m | [31;1m|[0m               <div>
+ [2m284[0m | [31;1m|[0m                 <div className="text-3xl font-bold text-yellow-600">
+ [2m285[0m | [31;1m|[0m                   {Math.round(
+ [2m286[0m | [31;1m|[0m                     (projects.reduce((total, p) => 
+ [2m287[0m | [31;1m|[0m                       total + p.suggestions.filter(s => s.status === 'approved').length, 0
+ [2m288[0m | [31;1m|[0m                     ) / projects.reduce((total, p) => total + p.suggestions.length, 0)) * 100 || 0
+ [2m289[0m | [31;1m|[0m                   )}%
+ [2m290[0m | [31;1m|[0m                 </div>
+ [2m291[0m | [31;1m|[0m                 <div className="text-sm text-gray-600">Acceptance Rate</div>
+ [2m292[0m | [31;1m|[0m               </div>
+ [2m293[0m | [31;1m|[0m             </div>
+ [2m294[0m | [31;1m|[0m           </div>
+ [2m295[0m | [31;1m|[0m         </div>
+ [2m296[0m | [31;1m|[0m       </div>
+ [2m297[0m | [31;1m`[0m[31;1m-[0m[31;1m>[0m   );
+ [2m298[0m |     }
+     `----
+
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:295:1]
+ [2m295[0m |       </div>
+ [2m296[0m |     </div>
+ [2m297[0m |   );
+ [2m298[0m | }
+     : [31;1m^[0m
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/projects/page.tsx
+   Reload env: .env.local
+ ⨯ ./src/app/projects/page.tsx
+Error: 
+  [31mx[0m await isn't allowed in non-async function
+    ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:93:1]
+ [2m93[0m | 
+ [2m94[0m | 
+ [2m95[0m |     try {
+ [2m96[0m |       const response = await fetch('/api/seed', {
+    : [31;1m                             ^^^^^[0m
+ [2m97[0m |         method: 'POST',
+ [2m98[0m |         headers: { 'Content-Type': 'application/json' }
+ [2m99[0m |       });
+    `----
+
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:120:1]
+ [2m120[0m |       const otherProjects = projects.filter(p => !['active', 'completed'].includes(p.status));
+ [2m121[0m |     
+ [2m122[0m |       if (loading) {
+ [2m123[0m | [31;1m,[0m[31;1m-[0m[31;1m>[0m     return (
+ [2m124[0m | [31;1m|[0m         <div className="min-h-screen bg-gray-50 p-8">
+ [2m125[0m | [31;1m|[0m           <div className="max-w-7xl mx-auto">
+ [2m126[0m | [31;1m|[0m             <div className="animate-pulse">
+ [2m127[0m | [31;1m|[0m               <div className="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
+ [2m128[0m | [31;1m|[0m               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ [2m129[0m | [31;1m|[0m                 {[1,2,3].map(i => (
+ [2m130[0m | [31;1m|[0m                   <div key={i} className="bg-white rounded-lg shadow-md p-6">
+ [2m131[0m | [31;1m|[0m                     <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+ [2m132[0m | [31;1m|[0m                     <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+ [2m133[0m | [31;1m|[0m                     <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+ [2m134[0m | [31;1m|[0m                   </div>
+ [2m135[0m | [31;1m|[0m                 ))}
+ [2m136[0m | [31;1m|[0m               </div>
+ [2m137[0m | [31;1m|[0m             </div>
+ [2m138[0m | [31;1m|[0m           </div>
+ [2m139[0m | [31;1m|[0m         </div>
+ [2m140[0m | [31;1m`[0m[31;1m-[0m[31;1m>[0m     );
+ [2m141[0m |       }
+ [2m142[0m |     
+ [2m143[0m |       return (
+     `----
+
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:140:1]
+ [2m140[0m |         );
+ [2m141[0m |       }
+ [2m142[0m |     
+ [2m143[0m | [31;1m,[0m[31;1m-[0m[31;1m>[0m   return (
+ [2m144[0m | [31;1m|[0m       <div className="min-h-screen bg-gray-50">
+ [2m145[0m | [31;1m|[0m         <Toaster position="top-right" />
+ [2m146[0m | [31;1m|[0m         
+ [2m147[0m | [31;1m|[0m         {/* Header */}
+ [2m148[0m | [31;1m|[0m         <div className="bg-white shadow-sm border-b">
+ [2m149[0m | [31;1m|[0m           <div className="max-w-7xl mx-auto px-8 py-4">
+ [2m150[0m | [31;1m|[0m             <div className="flex justify-between items-center">
+ [2m151[0m | [31;1m|[0m               <div>
+ [2m152[0m | [31;1m|[0m                 <h1 className="text-2xl font-bold text-gray-900">Project Workflow Dashboard</h1>
+ [2m153[0m | [31;1m|[0m                 <p className="text-sm text-gray-600 mt-1">
+ [2m154[0m | [31;1m|[0m                   AI-powered project management with intelligent suggestions
+ [2m155[0m | [31;1m|[0m                 </p>
+ [2m156[0m | [31;1m|[0m               </div>
+ [2m157[0m | [31;1m|[0m               <div className="flex space-x-3">
+ [2m158[0m | [31;1m|[0m                 <button
+ [2m159[0m | [31;1m|[0m                   onClick={handleRefresh}
+ [2m160[0m | [31;1m|[0m                   disabled={refreshing}
+ [2m161[0m | [31;1m|[0m                   className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+ [2m162[0m | [31;1m|[0m                 >
+ [2m163[0m | [31;1m|[0m                   <RefreshCcw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+ [2m164[0m | [31;1m|[0m                   Refresh
+ [2m165[0m | [31;1m|[0m                 </button>
+ [2m166[0m | [31;1m|[0m                 <button
+ [2m167[0m | [31;1m|[0m                   className="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700"
+ [2m168[0m | [31;1m|[0m                 >
+ [2m169[0m | [31;1m|[0m                   <Database className="w-4 h-4 mr-2" />
+ [2m170[0m | [31;1m|[0m                 </button>
+ [2m171[0m | [31;1m|[0m                 </div>
+ [2m172[0m | [31;1m|[0m             </div>
+ [2m173[0m | [31;1m|[0m           </div>
+ [2m174[0m | [31;1m|[0m         </div>
+ [2m175[0m | [31;1m|[0m   
+ [2m176[0m | [31;1m|[0m         {/* Main Content */}
+ [2m177[0m | [31;1m|[0m         <div className="max-w-7xl mx-auto px-8 py-8">
+ [2m178[0m | [31;1m|[0m           {/* Stats Overview */}
+ [2m179[0m | [31;1m|[0m           {/* Task Queue Section */}
+ [2m180[0m | [31;1m|[0m           {(pendingTasks > 0 || runningTasks > 0) && (
+ [2m181[0m | [31;1m|[0m             <div className="mb-8 bg-white rounded-lg shadow-sm p-6">
+ [2m182[0m | [31;1m|[0m               <div className="flex justify-between items-center mb-4">
+ [2m183[0m | [31;1m|[0m                 <div>
+ [2m184[0m | [31;1m|[0m                   <h2 className="text-lg font-semibold text-gray-900">Task Queue</h2>
+ [2m185[0m | [31;1m|[0m                   <p className="text-sm text-gray-600">Monitor and execute pending tasks</p>
+ [2m186[0m | [31;1m|[0m                 </div>
+ [2m187[0m | [31;1m|[0m                 {pendingTasks > 0 && (
+ [2m188[0m | [31;1m|[0m                   <button
+ [2m189[0m | [31;1m|[0m                     onClick={executeAllPendingTasks}
+ [2m190[0m | [31;1m|[0m                     className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+ [2m191[0m | [31;1m|[0m                   >
+ [2m192[0m | [31;1m|[0m                     <Play className="w-4 h-4 mr-2" />
+ [2m193[0m | [31;1m|[0m                     Run {pendingTasks} Pending Tasks
+ [2m194[0m | [31;1m|[0m                   </button>
+ [2m195[0m | [31;1m|[0m                 )}
+ [2m196[0m | [31;1m|[0m               </div>
+ [2m197[0m | [31;1m|[0m               
+ [2m198[0m | [31;1m|[0m               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ [2m199[0m | [31;1m|[0m                 <div className="text-center p-4 bg-gray-50 rounded-lg">
+ [2m200[0m | [31;1m|[0m                   <div className="text-2xl font-bold text-gray-900">{pendingTasks}</div>
+ [2m201[0m | [31;1m|[0m                   <div className="text-sm text-gray-600">Pending Tasks</div>
+ [2m202[0m | [31;1m|[0m                 </div>
+ [2m203[0m | [31;1m|[0m                 <div className="text-center p-4 bg-green-50 rounded-lg">
+ [2m204[0m | [31;1m|[0m                   <div className="text-2xl font-bold text-green-600">{runningTasks}</div>
+ [2m205[0m | [31;1m|[0m                   <div className="text-sm text-gray-600">Running Tasks</div>
+ [2m206[0m | [31;1m|[0m                 </div>
+ [2m207[0m | [31;1m|[0m                 <div className="text-center p-4 bg-blue-50 rounded-lg">
+ [2m208[0m | [31;1m|[0m                   <div className="text-2xl font-bold text-blue-600">{(runningTasks / (pendingTasks + runningTasks || 1) * 100).toFixed(0)}%</div>
+ [2m209[0m | [31;1m|[0m                   <div className="text-sm text-gray-600">Completion Rate</div>
+ [2m210[0m | [31;1m|[0m                 </div>
+ [2m211[0m | [31;1m|[0m               </div>
+ [2m212[0m | [31;1m|[0m             </div>
+ [2m213[0m | [31;1m|[0m           )}
+ [2m214[0m | [31;1m|[0m   
+ [2m215[0m | [31;1m|[0m           {/* Stats Overview */}
+ [2m216[0m | [31;1m|[0m           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+ [2m217[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m218[0m | [31;1m|[0m               <div className="text-2xl font-bold text-gray-900">{projects.length}</div>
+ [2m219[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Total Projects</div>
+ [2m220[0m | [31;1m|[0m             </div>
+ [2m221[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m222[0m | [31;1m|[0m               <div className="text-2xl font-bold text-green-600">{activeProjects.length}</div>
+ [2m223[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Active</div>
+ [2m224[0m | [31;1m|[0m             </div>
+ [2m225[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m226[0m | [31;1m|[0m               <div className="text-2xl font-bold text-blue-600">{completedProjects.length}</div>
+ [2m227[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Completed</div>
+ [2m228[0m | [31;1m|[0m             </div>
+ [2m229[0m | [31;1m|[0m             <div className="bg-white rounded-lg shadow-sm p-6">
+ [2m230[0m | [31;1m|[0m               <div className="text-2xl font-bold text-purple-600">
+ [2m231[0m | [31;1m|[0m                 {projects.reduce((total, p) => total + p.suggestions.filter(s => s.status === 'pending').length, 0)}
+ [2m232[0m | [31;1m|[0m               </div>
+ [2m233[0m | [31;1m|[0m               <div className="text-sm text-gray-600">Pending AI Suggestions</div>
+ [2m234[0m | [31;1m|[0m             </div>
+ [2m235[0m | [31;1m|[0m           </div>
+ [2m236[0m | [31;1m|[0m   
+ [2m237[0m | [31;1m|[0m           {/* Projects Grid */}
+ [2m238[0m | [31;1m|[0m           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+ [2m239[0m | [31;1m|[0m             {projects.length === 0 ? (
+ [2m240[0m | [31;1m|[0m               <div className="col-span-full">
+ [2m241[0m | [31;1m|[0m                 <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+ [2m242[0m | [31;1m|[0m                   <Plus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+ [2m243[0m | [31;1m|[0m                   <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
+ [2m244[0m | [31;1m|[0m                   <p className="text-gray-600 mb-4">
+ [2m245[0m | [31;1m|[0m                     Get started by creating your first project with AI suggestions
+ [2m246[0m | [31;1m|[0m                   </p>
+ [2m247[0m | [31;1m|[0m                   <div className="flex justify-center space-x-3">
+ [2m248[0m | [31;1m|[0m                     <button
+ [2m249[0m | [31;1m|[0m                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700"
+ [2m250[0m | [31;1m|[0m                     >
+ [2m251[0m | [31;1m|[0m                       <Database className="w-4 h-4 mr-2" />
+ [2m252[0m | [31;1m|[0m                     </button>
+ [2m253[0m | [31;1m|[0m                   </div>
+ [2m254[0m | [31;1m|[0m                 </div>
+ [2m255[0m | [31;1m|[0m               </div>
+ [2m256[0m | [31;1m|[0m             ) : (
+ [2m257[0m | [31;1m|[0m               projects.map(project => (
+ [2m258[0m | [31;1m|[0m                 <EnhancedProjectCard key={project.id} project={project} onUpdate={loadProjects} />
+ [2m259[0m | [31;1m|[0m               ))
+ [2m260[0m | [31;1m|[0m             )}
+ [2m261[0m | [31;1m|[0m           </div>
+ [2m262[0m | [31;1m|[0m   
+ [2m263[0m | [31;1m|[0m           {/* Analytics Summary */}
+ [2m264[0m | [31;1m|[0m           <div className="mt-12 bg-white rounded-lg shadow-sm p-6">
+ [2m265[0m | [31;1m|[0m             <h2 className="text-lg font-semibold text-gray-900 mb-4">AI Suggestions Analytics</h2>
+ [2m266[0m | [31;1m|[0m             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+ [2m267[0m | [31;1m|[0m               <div>
+ [2m268[0m | [31;1m|[0m                 <div className="text-3xl font-bold text-green-600">
+ [2m269[0m | [31;1m|[0m                   {projects.reduce((total, p) => 
+ [2m270[0m | [31;1m|[0m                     total + p.suggestions.filter(s => s.status === 'approved').length, 0
+ [2m271[0m | [31;1m|[0m                   )}
+ [2m272[0m | [31;1m|[0m                 </div>
+ [2m273[0m | [31;1m|[0m                 <div className="text-sm text-gray-600">Suggestions Approved</div>
+ [2m274[0m | [31;1m|[0m               </div>
+ [2m275[0m | [31;1m|[0m               <div>
+ [2m276[0m | [31;1m|[0m                 <div className="text-3xl font-bold text-red-600">
+ [2m277[0m | [31;1m|[0m                   {projects.reduce((total, p) => 
+ [2m278[0m | [31;1m|[0m                     total + p.suggestions.filter(s => s.status === 'declined').length, 0
+ [2m279[0m | [31;1m|[0m                   )}
+ [2m280[0m | [31;1m|[0m                 </div>
+ [2m281[0m | [31;1m|[0m                 <div className="text-sm text-gray-600">Suggestions Declined</div>
+ [2m282[0m | [31;1m|[0m               </div>
+ [2m283[0m | [31;1m|[0m               <div>
+ [2m284[0m | [31;1m|[0m                 <div className="text-3xl font-bold text-yellow-600">
+ [2m285[0m | [31;1m|[0m                   {Math.round(
+ [2m286[0m | [31;1m|[0m                     (projects.reduce((total, p) => 
+ [2m287[0m | [31;1m|[0m                       total + p.suggestions.filter(s => s.status === 'approved').length, 0
+ [2m288[0m | [31;1m|[0m                     ) / projects.reduce((total, p) => total + p.suggestions.length, 0)) * 100 || 0
+ [2m289[0m | [31;1m|[0m                   )}%
+ [2m290[0m | [31;1m|[0m                 </div>
+ [2m291[0m | [31;1m|[0m                 <div className="text-sm text-gray-600">Acceptance Rate</div>
+ [2m292[0m | [31;1m|[0m               </div>
+ [2m293[0m | [31;1m|[0m             </div>
+ [2m294[0m | [31;1m|[0m           </div>
+ [2m295[0m | [31;1m|[0m         </div>
+ [2m296[0m | [31;1m|[0m       </div>
+ [2m297[0m | [31;1m`[0m[31;1m-[0m[31;1m>[0m   );
+ [2m298[0m |     }
+     `----
+
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/home/alb/.openclaw/workspace/mission-control/src/app/projects/page.tsx[0m:295:1]
+ [2m295[0m |       </div>
+ [2m296[0m |     </div>
+ [2m297[0m |   );
+ [2m298[0m | }
+     : [31;1m^[0m
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/projects/page.tsx
