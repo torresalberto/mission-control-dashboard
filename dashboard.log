@@ -50,3 +50,7 @@
    - Local:        http://localhost:3000
 
  ✓ Ready in 1960ms
+ ○ Compiling /projects/page ...
+ ✓ Compiled /projects/page in 3.6s (519 modules)
+ ✓ Compiled in 343ms (266 modules)
+ ✓ Compiled /api/agents/route in 415ms (519 modules)

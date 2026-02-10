@@ -279,9 +279,20 @@ export async function createSuggestion(data: {
 // Update suggestion status
 export async function updateSuggestionStatus(
   id: number,
-  status: 'approved' | 'declined' | 'snoozed' | 'executed'
+  status: 'approved' | 'declined' | 'snoozed' | 'executed',
+  reason?: string
 ): Promise<ProjectSuggestion | null> {
   const db = await getDb();
+  
+  // If reason provided, store it (update config or add to activity log)
+  if (reason) {
+    // Log the reason
+    await db.run(
+      `INSERT INTO activity_logs (action, details, timestamp) VALUES (?, ?, datetime('now'))`,
+      `suggestion_${status}`,
+      JSON.stringify({ suggestionId: id, reason: reason })
+    );
+  }
   
   await db.run(
     `UPDATE project_suggestions 
