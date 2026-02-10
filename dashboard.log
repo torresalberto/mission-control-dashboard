@@ -77,3 +77,4 @@
 [DB] Runtime - initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
  ✓ Compiled /api/projects/route in 125ms (283 modules)
 [DB] Connecting to: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+ ✓ Compiled in 313ms (282 modules)
