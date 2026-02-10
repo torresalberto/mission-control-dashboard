@@ -1,4 +1,4 @@
-.export class ProjectsDb {
+export class ProjectsDb {
   async getAllProjects() {
     return Promise.resolve([
       {
