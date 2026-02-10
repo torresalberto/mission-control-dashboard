@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-activity": "node scripts/generate-activity.js",
+    "prebuild": "npm run generate-activity"
   },
   "dependencies": {
     "date-fns": "^2.30.0",
@@ -14,9 +16,7 @@
     "next": "14.0.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-hot-toast": "^2.6.0",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "react-hot-toast": "^2.6.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -151,3 +151,6 @@ Import trace for requested module:
  ✓ Compiled in 206ms (285 modules)
  ✓ Compiled in 218ms (285 modules)
  ✓ Compiled in 370ms (279 modules)
+ ✓ Compiled in 171ms (279 modules)
+ ✓ Compiled in 151ms (279 modules)
+ ⨯ Module not found: Error: Can't resolve 'next-flight-client-entry-loader' in '/home/alb/.openclaw/workspace/mission-control'
