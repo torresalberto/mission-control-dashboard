@@ -71,3 +71,9 @@
  ✓ Compiled in 182ms (282 modules)
  ✓ Compiled in 148ms (282 modules)
  ✓ Compiled in 118ms (282 modules)
+ ✓ Compiled /projects/page in 289ms (245 modules)
+ ✓ Compiled /not-found in 147ms (518 modules)
+ ✓ Compiled /api/seed/route in 110ms (273 modules)
+[DB] Runtime - initializing: /home/alb/.openclaw/workspace/mission-control/mission-control.db
+ ✓ Compiled /api/projects/route in 125ms (283 modules)
+[DB] Connecting to: /home/alb/.openclaw/workspace/mission-control/mission-control.db
