@@ -79,3 +79,6 @@
 [DB] Connecting to: /home/alb/.openclaw/workspace/mission-control/mission-control.db
  ✓ Compiled in 313ms (282 modules)
  ✓ Compiled in 486ms (282 modules)
+ ✓ Compiled /api/agents/route in 115ms (32 modules)
+ ✓ Compiled in 273ms (282 modules)
+ ✓ Compiled in 519ms (282 modules)

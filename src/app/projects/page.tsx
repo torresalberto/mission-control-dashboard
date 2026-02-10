@@ -38,7 +38,22 @@ export default function ProjectsPage() {
 
   useEffect(() => {
     loadProjects();
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      loadProjects();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
+  
+  // Auto-seed if empty
+  useEffect(() => {
+    if (!loading && projects.length === 0) {
+      console.log('Projects empty - auto-seeding...');
+      handleSeedDatabase();
+    }
+  }, [loading, projects]);
 
   const handleCreateSampleProject = async () => {
     try {

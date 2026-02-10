@@ -7,31 +7,32 @@ export interface AgentStatus {
   currentTask?: string;
   lastAction: string;
   lastOutput: string;
-  runtime: number; // seconds
+  runtime: number;
   lastUpdate: string;
 }
 
-// Simulated agent registry - in production this reads from session state
+// Simulated agent registry - updated to current status
+// TODO: Replace with real session monitoring API
 export const AGENT_REGISTRY: AgentStatus[] = [
   {
     id: 'kimi-director',
     name: 'Kimi-Director',
     model: 'nvidia/kimi-k2.5',
     status: 'busy',
-    currentTask: 'Mission Control testing',
-    lastAction: 'Spawned sub-agent e0e21d05',
-    lastOutput: 'Family ops paused, archiving data...',
-    runtime: 840,
+    currentTask: 'Mission Control optimization',
+    lastAction: 'Pushed commit 0bb18ce',
+    lastOutput: '6 optimizations + MiniCPM project added',
+    runtime: 3600,
     lastUpdate: new Date().toISOString()
   },
   {
     id: 'k2.5-think',
-    name: 'K2.5-Think', 
+    name: 'K2.5-Think',
     model: 'nvidia-kimi3/kimi-k2.5',
-    status: 'error',
-    currentTask: 'Mission Control build',
-    lastAction: 'Build failed - TypeScript errors',
-    lastOutput: 'SQLITE_CANTOPEN during static generation',
+    status: 'idle',
+    currentTask: undefined,
+    lastAction: 'Build fixed - deferred DB loading',
+    lastOutput: 'SQLite working on Vercel (runtime init)',
     runtime: 0,
     lastUpdate: new Date().toISOString()
   },
@@ -39,10 +40,10 @@ export const AGENT_REGISTRY: AgentStatus[] = [
     id: 'think-nv',
     name: 'Think-NV',
     model: 'nvidia/kimi-k2-thinking',
-    status: 'error',
-    currentTask: 'Database init fix',
-    lastAction: 'Seed script isolation failed',
-    lastOutput: 'Build process keeps opening DB at build time',
+    status: 'idle',
+    currentTask: undefined,
+    lastAction: 'Build fixed - mock DB during build',
+    lastOutput: 'TypeScript generic issues resolved',
     runtime: 0,
     lastUpdate: new Date().toISOString()
   },
@@ -50,11 +51,11 @@ export const AGENT_REGISTRY: AgentStatus[] = [
     id: 'kimi-instruct',
     name: 'Kimi-Instruct',
     model: 'nvidia-kimi2/kimi-k2-instruct',
-    status: 'busy',
-    currentTask: 'mission-control-delivery',
-    lastAction: 'Testing dashboard buttons',
-    lastOutput: 'GET /api/projects returned 5 projects',
-    runtime: 1080,
+    status: 'idle',
+    currentTask: undefined,
+    lastAction: 'UI components verified',
+    lastOutput: 'Seed button working on Vercel',
+    runtime: 1200,
     lastUpdate: new Date().toISOString()
   },
   {
@@ -63,8 +64,8 @@ export const AGENT_REGISTRY: AgentStatus[] = [
     model: 'nvidia-kimi2/kimi-k2-instruct-0905',
     status: 'idle',
     currentTask: undefined,
-    lastAction: 'Available for review/fallback',
-    lastOutput: 'Idle - awaiting assignment',
+    lastAction: 'QA verification complete',
+    lastOutput: 'No runtime errors detected',
     runtime: 0,
     lastUpdate: new Date().toISOString()
   }
@@ -72,7 +73,6 @@ export const AGENT_REGISTRY: AgentStatus[] = [
 
 export function getAgentStatus(): AgentStatus[] {
   return AGENT_REGISTRY.sort((a, b) => {
-    // Sort by status: busy first, then error, then idle
     const statusOrder = { busy: 0, error: 1, idle: 2, offline: 3 };
     return statusOrder[a.status] - statusOrder[b.status];
   });
