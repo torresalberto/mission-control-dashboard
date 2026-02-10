@@ -177,17 +177,30 @@ export async function createProject(data: {
 }): Promise<Project> {
   const db = await getDb();
   
-  const result = await db.run(
-    `INSERT INTO projects (name, description, status, progress, last_activity) 
-     VALUES (?, ?, ?, ?, datetime('now'))`,
-    data.name,
-    data.description,
-    data.status || 'active',
-    data.progress || 0
-  );
-  
-  const project = (await db.get('SELECT * FROM projects WHERE id = ?', result.lastID)) as Project;
-  return project;
+  try {
+    const result = await db.run(
+      `INSERT INTO projects (name, description, status, progress, last_activity) 
+       VALUES (?, ?, ?, ?, datetime('now'))`,
+      data.name,
+      data.description,
+      data.status || 'active',
+      data.progress || 0
+    );
+    
+    // Log activity for project creation
+    try {
+      const { logActivity } = await import('@/lib/db');
+      logActivity('project_created', data.name);
+    } catch (e) {
+      console.error('Failed to log activity:', e);
+    }
+    
+    const project = (await db.get('SELECT * FROM projects WHERE id = ?', result.lastID)) as Project;
+    return project;
+  } catch (error) {
+    console.error('Error creating project:', error);
+    throw error;
+  }
 }
 
 // Update project
@@ -267,20 +280,33 @@ export async function updateSuggestionStatus(
 ): Promise<ProjectSuggestion | null> {
   const db = await getDb();
   
-  // Log reason if provided
-  if (reason) {
+  try {
+    // Get suggestion info before update
+    const suggestion = await db.get('SELECT * FROM project_suggestions WHERE id = ?', id);
+    if (!suggestion) return null;
+    
+    // Log suggestion action
+    try {
+      const { logActivity } = await import('@/lib/db');
+      logActivity('suggestion_action', JSON.stringify({
+        action: status,
+        suggestionId: id,
+        suggestionTitle: suggestion.title,
+        reason: reason || 'No reason provided'
+      }));
+    } catch (e) {
+      console.error('Failed to log activity:', e);
+    }
+    
     await db.run(
-      'INSERT INTO activity_logs (action, details, timestamp) VALUES (?, ?, datetime("now"))',
-      `suggestion_${status}`,
-      JSON.stringify({ suggestionId: id, reason })
+      'UPDATE project_suggestions SET status = ?, acted_at = datetime("now") WHERE id = ?',
+      status,
+      id
     );
+    
+    return (await db.get('SELECT * FROM project_suggestions WHERE id = ?', id)) as ProjectSuggestion | null;
+  } catch (error) {
+    console.error('Error updating suggestion status:', error);
+    throw error;
   }
-  
-  await db.run(
-    'UPDATE project_suggestions SET status = ?, acted_at = datetime("now") WHERE id = ?',
-    status,
-    id
-  );
-  
-  return (await db.get('SELECT * FROM project_suggestions WHERE id = ?', id)) as ProjectSuggestion | null;
 }

@@ -39,6 +39,23 @@ export async function POST(): Promise<NextResponse> {
        (7, 'integration', 'Add as vision fallback', 'Use when Gemini API unavailable', 85, 'pending')`
     );
     
+    // Log database seeding activity
+    try {
+      const db = initDb();
+      const { logActivity } = await import('@/lib/db');
+      try {
+        logActivity('database_seeded', 'Sample data loaded');
+      } catch (e) {
+        // Fallback log if logActivity not available
+        db.run(
+          'INSERT INTO activity_logs (action, details) VALUES (?, ?)',
+          ['database_seeded', 'Sample data loaded']
+        );
+      }
+    } catch (e) {
+      console.error('Failed to log seeding activity:', e);
+    }
+    
     return NextResponse.json({ 
       success: true, 
       message: 'Database seeded: 7 projects, 12 suggestions (6 Mission Control optimizations ready to approve)' 

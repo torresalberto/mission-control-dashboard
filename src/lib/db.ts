@@ -118,6 +118,23 @@ function initTables(db: any) {
   )`);
 }
 
+// Activity logging function
+export function logActivity(action: string, details: string): void {
+  try {
+    const db = initDb();
+    db.run(
+      'INSERT INTO activity_logs (action, details) VALUES (?, ?)',
+      [action, details],
+      (err: any) => {
+        if (err) console.error('[Activity] Failed to log:', err);
+        else console.log('[Activity] Logged:', action, '|', details);
+      }
+    );
+  } catch (error) {
+    console.error('[Activity] Error logging activity:', error);
+  }
+}
+
 // Safe getter
 export default function getDb(): any {
   return initDb();

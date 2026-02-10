@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
-import { initDb } from '@/lib/db';
+import getDb from '@/lib/db';
 
 export async function GET(): Promise<NextResponse> {
-  const db = initDb();
+  const db = getDb();
   
   try {
     const activities = await new Promise<any[]>((resolve, reject) => {
       db.all(
-        `SELECT id, timestamp, action_type, tool_name, result_summary, session_id, success 
-         FROM activity_logs 
-         ORDER BY timestamp DESC 
-         LIMIT 50`,
+        `SELECT id, action, details, timestamp FROM activity_logs ORDER BY timestamp DESC LIMIT 50`,
         [],
         (err, rows) => {
           if (err) reject(err);
