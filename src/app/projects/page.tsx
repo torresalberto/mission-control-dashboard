@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ProjectCard from '@/components/ProjectCard';
-import { Plus, RefreshCcw } from 'lucide-react';
+import { Plus, RefreshCcw, Database } from 'lucide-react';
 import { getAllProjects } from '@/lib/projects';
 import { Toaster } from 'react-hot-toast';
 
@@ -66,6 +66,25 @@ export default function ProjectsPage() {
     }
   };
 
+  const handleSeedDatabase = async () => {
+    try {
+      const response = await fetch('/api/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        loadProjects();
+        alert('Database seeded successfully!');
+      } else {
+        alert('Error seeding database. Check console for details.');
+      }
+    } catch (error) {
+      console.error('Error seeding database:', error);
+      alert('Error seeding database. Check console for details.');
+    }
+  };
+
   const handleRefresh = () => {
     setRefreshing(true);
     loadProjects();
@@ -120,11 +139,18 @@ export default function ProjectsPage() {
                 Refresh
               </button>
               <button
+                onClick={handleSeedDatabase}
+                className="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700"
+              >
+                <Database className="w-4 h-4 mr-2" />
+                Seed Database
+              </button>
+              <button
                 onClick={handleCreateSampleProject}
                 className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Sample
+                Create Sample Project
               </button>
             </div>
           </div>
@@ -165,13 +191,22 @@ export default function ProjectsPage() {
                 <p className="text-gray-600 mb-4">
                   Get started by creating your first project with AI suggestions
                 </p>
-                <button
-                  onClick={handleCreateSampleProject}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Sample Project
-                </button>
+                <div className="flex justify-center space-x-3">
+                  <button
+                    onClick={handleCreateSampleProject}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Sample Project
+                  </button>
+                  <button
+                    onClick={handleSeedDatabase}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Database className="w-4 h-4 mr-2" />
+                    Seed Database
+                  </button>
+                </div>
               </div>
             </div>
           ) : (

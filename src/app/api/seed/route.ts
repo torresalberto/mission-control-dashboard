@@ -12,7 +12,7 @@ export async function POST(): Promise<NextResponse> {
       ('Sports Picks AI', 'ML model for sports betting predictions', 'active', 40),
       ('Doctoriofy MVP', 'Healthcare appointment booking platform', 'paused', 20),
       ('GitHub Cleanup', 'Repository maintenance and organization', 'active', 80),
-      ('Mission Control', 'Agent monitoring dashboard', 'active', 90)`
+      ('Mission Control', 'This dashboard - AI-powered project management and agent monitoring system', 'active', 95)`
     );
     
     // Insert sample suggestions
