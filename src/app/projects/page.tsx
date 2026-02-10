@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProjectCard from '@/components/ProjectCard';
-import { Plus, RefreshCcw, Database } from 'lucide-react';
+import EnhancedProjectCard from '@/components/EnhancedProjectCard';
+import { Plus, RefreshCcw, Database, Play, Clock } from 'lucide-react';
 import { getAllProjects } from '@/lib/projects';
 import { Toaster } from 'react-hot-toast';
 
@@ -21,6 +21,8 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [pendingTasks, setPendingTasks] = useState(0);
+  const [runningTasks, setRunningTasks] = useState(0);
 
   const loadProjects = async () => {
     try {
@@ -36,15 +38,51 @@ export default function ProjectsPage() {
     }
   };
 
+  const loadTasks = async () => {
+    try {
+      const response = await fetch('/api/tasks');
+      if (!response.ok) throw new Error('Failed to fetch tasks');
+      const data = await response.json();
+      const pending = data.tasks.filter((t: any) => t.status === 'pending').length;
+      const running = data.tasks.filter((t: any) => t.status === 'running').length;
+      setPendingTasks(pending);
+      setRunningTasks(running);
+    } catch (error) {
+      console.error('Error loading tasks:', error);
+    }
+  };
+
+  const executeAllPendingTasks = async () => {
+    try {
+      const response = await fetch('/api/tasks/execute-all', {
+        method: 'POST',
+      });
+      if (!response.ok) throw new Error('Failed to execute tasks');
+      toast.success('Executing all pending tasks...');
+      loadTasks();
+    } catch (error) {
+      console.error('Error executing tasks:', error);
+      toast.error('Failed to execute tasks');
+    }
+  };
+
   useEffect(() => {
     loadProjects();
+    loadTasks();
     
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(() => {
+    // Auto-refresh every 30 seconds for projects and 5 seconds for tasks
+    const projectsInterval = setInterval(() => {
       loadProjects();
     }, 30000);
     
-    return () => clearInterval(interval);
+    const tasksInterval = setInterval(() => {
+      loadTasks();
+    }, 5000);
+    
+    return () => {
+      clearInterval(projectsInterval);
+      clearInterval(tasksInterval);
+    };
   }, []);
   
   // Auto-seed if empty
@@ -168,6 +206,43 @@ export default function ProjectsPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-8 py-8">
         {/* Stats Overview */}
+        {/* Task Queue Section */}
+        {(pendingTasks > 0 || runningTasks > 0) && (
+          <div className="mb-8 bg-white rounded-lg shadow-sm p-6">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Task Queue</h2>
+                <p className="text-sm text-gray-600">Monitor and execute pending tasks</p>
+              </div>
+              {pendingTasks > 0 && (
+                <button
+                  onClick={executeAllPendingTasks}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Run {pendingTasks} Pending Tasks
+                </button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-2xl font-bold text-gray-900">{pendingTasks}</div>
+                <div className="text-sm text-gray-600">Pending Tasks</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">{runningTasks}</div>
+                <div className="text-sm text-gray-600">Running Tasks</div>
+              </div>
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">{(runningTasks / (pendingTasks + runningTasks || 1) * 100).toFixed(0)}%</div>
+                <div className="text-sm text-gray-600">Completion Rate</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="text-2xl font-bold text-gray-900">{projects.length}</div>
@@ -212,7 +287,7 @@ export default function ProjectsPage() {
             </div>
           ) : (
             projects.map(project => (
-              <ProjectCard key={project.id} project={project} onUpdate={loadProjects} />
+              <EnhancedProjectCard key={project.id} project={project} onUpdate={loadProjects} />
             ))
           )}
         </div>

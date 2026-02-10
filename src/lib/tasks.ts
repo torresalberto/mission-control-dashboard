@@ -1,93 +1,104 @@
-export interface QueuedTask {
-  id: string;
-  suggestionId: string;
-  projectId: string;
+export interface Task {
+  id: number;
+  project_id: number;
+  title: string;
+  description: string;
   status: 'pending' | 'running' | 'completed' | 'failed';
-  agentType: string;
-  task: any;
-  createdAt: Date;
-  startedAt?: Date;
-  completedAt?: Date;
-  result?: any;
-  error?: string;
+  priority: 'low' | 'medium' | 'high';
+  created_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  result: string | null;
+  error: string | null;
+  task_type: string;
+  config: string; // JSON string
 }
 
-// Simple in-memory task queue for now
-const tasks = new Map<string, QueuedTask>();
+export interface TaskActivityLog {
+  id: number;
+  task_id: number;
+  action: string;
+  details: string;
+  timestamp: string;
+  metadata: string | null;
+}
 
-export function queueTask(task: Omit<QueuedTask, 'id' | 'createdAt' | 'status'>): QueuedTask {
-  const id = `task_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-  const newTask: QueuedTask = {
-    ...task,
-    id,
-    createdAt: new Date(),
-    status: 'pending'
-  };
+// Get all pending tasks
+export async function getPendingTasks(): Promise<Task[]> {
+  try {
+    const response = await fetch('/api/tasks?status=pending&running');
+    if (!response.ok) throw new Error('Failed to fetch tasks');
+    const data = await response.json();
+    return data.tasks || [];
+  } catch (error) {
+    console.error('Error fetching pending tasks:', error);
+    return [];
+  }
+}
+
+// Get all tasks for a project
+export async function getTasksByProject(projectId: number): Promise<Task[]> {
+  try {
+    const response = await fetch(`/api/tasks?project_id=${projectId}`);
+    if (!response.ok) throw new Error('Failed to fetch tasks');
+    const data = await response.json();
+    return data.tasks || [];
+  } catch (error) {
+    console.error('Error fetching project tasks:', error);
+    return [];
+  }
+}
+
+// Execute a pending task
+export async function executeTask(taskId: number): Promise<Task> {
+  const response = await fetch(`/api/tasks/${taskId}/execute`, {
+    method: 'POST',
+  });
   
-  tasks.set(id, newTask);
-  return newTask;
-}
-
-export function getPendingTasks(limit?: number): QueuedTask[] {
-  const pendingTasks = Array.from(tasks.values())
-    .filter(task => task.status === 'pending')
-    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-  
-  return limit ? pendingTasks.slice(0, limit) : pendingTasks;
-}
-
-export function getTasksByStatus(status?: QueuedTask['status']): QueuedTask[] {
-  if (!status) {
-    return Array.from(tasks.values()).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to execute task');
   }
   
-  return Array.from(tasks.values())
-    .filter(task => task.status === status)
-    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  return response.json();
 }
 
-export function getTaskById(id: string): QueuedTask | undefined {
-  return tasks.get(id);
-}
-
-export function startTask(id: string): QueuedTask | null {
-  const task = tasks.get(id);
-  if (!task || task.status !== 'pending') {
-    return null;
+// Execute all pending tasks
+export async function executeAllPendingTasks(): Promise<Task[]> {
+  const response = await fetch('/api/tasks/execute-all', {
+    method: 'POST',
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to execute tasks');
   }
   
-  task.status = 'running';
-  task.startedAt = new Date();
-  tasks.set(id, task);
-  return task;
+  return response.json();
 }
 
-export function completeTask(id: string, result: any): QueuedTask | null {
-  const task = tasks.get(id);
-  if (!task || task.status !== 'running') {
-    return null;
-  }
+// Log task activity
+export async function logTaskActivity(taskId: number, action: string, details: string, metadata?: any): Promise<void> {
+  const response = await fetch('/api/tasks/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ taskId, action, details, metadata }),
+  });
   
-  task.status = 'completed';
-  task.result = result;
-  task.completedAt = new Date();
-  tasks.set(id, task);
-  return task;
-}
-
-export function failTask(id: string, error: string): QueuedTask | null {
-  const task = tasks.get(id);
-  if (!task || task.status !== 'running') {
-    return null;
+  if (!response.ok) {
+    console.error('Failed to log task activity');
   }
-  
-  task.status = 'failed';
-  task.error = error;
-  task.completedAt = new Date();
-  tasks.set(id, task);
-  return task;
 }
 
-export function deleteTask(id: string): boolean {
-  return tasks.delete(id);
+// Get task activity logs
+export async function getTaskActivity(taskId: number): Promise<TaskActivityLog[]> {
+  try {
+    const response = await fetch(`/api/tasks/${taskId}/activity`);
+    if (!response.ok) throw new Error('Failed to fetch activity');
+    const data = await response.json();
+    return data.activity || [];
+  } catch (error) {
+    console.error('Error fetching task activity:', error);
+    return [];
+  }
 }

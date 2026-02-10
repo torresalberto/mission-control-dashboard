@@ -1,0 +1,206 @@
+{
+  "campaignOptimizations": [
+    {
+      "id": "suggestion-1-ab-test",
+      "type": "ab-test",
+      "title": "Optimize subject line A/B test",
+      "description": "Current open rates are below optimal levels. Implement A/B testing with 3-5 subject line variants focusing on personalization, urgency, and specific value propositions.",
+      "confidence": 80,
+      "estimatedImpact": "+15-25% open rate improvement",
+      "categories": ["subject_line", "testing", "optimization"],
+      "priority": "high",
+      "dataRequired": ["recent_open_rates", "industry_benchmarks", "user_segments"],
+      "implementation": {
+        "steps": [
+          "Create 3-5 subject line variations",
+          "Group test by industry segment",
+          "Test personalization with company names",
+          "Include urgency elements",
+          "Focus on specific ROI benefits"
+        ],
+        "tools": ["A/B testing platform", "Email analytics", "Segmentation data"],
+        "timeline": "3-5 days setup, 1 week test duration"
+      },
+      "expectedResults": {
+        "openRateTarget": "35%",
+        "clickRateTarget": "8%",
+        "bestPractices": [
+          "Test one variable at a time",
+          "Use clear, concise subject lines",
+          "Include recipient names when possible",
+          "Create urgency without being spammy"
+        ]
+      }
+    },
+    {
+      "id": "suggestion-2-personalization",
+      "type": "personalization",
+      "title": "Add personalization tokens",
+      "description": "Implement dynamic content personalization using tokens like {{first_name}}, {{company_name}}, {{industry}}, and {{company_size}} throughout the email sequences for better engagement.",
+      "confidence": 75,
+      "estimatedImpact": "+12-18% engagement improvement",
+      "categories": ["personalization", "tokens", "dynamic_content"],
+      "priority": "high",
+      "dataRequired": ["user_data", "company_info", "industry_segments", "usage_patterns"],
+      "tokens": [
+        {
+          "token": "{{first_name}}",
+          "value": "user.firstName",
+          "fallback": "there"
+        },
+        {
+          "token": "{{company_name}}",
+          "value": "user.companyName",
+          "fallback": "your business"
+        },
+        {
+          "token": "{{industry}}",
+          "value": "user.industry",
+          "fallback": "growing"
+        },
+        {
+          "token": "{{company_size}}",
+          "value": "user.companySize",
+          "fallback": "team"
+        }
+      ],
+      "implementation": {
+        "steps": [
+          "Update email templates with tokens",
+          "Enhance user profile with company data",
+          "Create industry-specific messaging",
+          "Test personalization tokens validation",
+          "Monitor token replacement rates"
+        ],
+        "tools": ["Email template system", "User data integration", "Fallback handling"],
+        "timeline": "1-2 days implementation, ongoing monitoring"
+      },
+      "expectedResults": {
+        "openRateTarget": "33%",
+        "clickRateTarget": "12%",
+        "bestPractices": [
+          "Use tokens naturally in sentences",
+          "Have reliable fallback values",
+          "Test tokens with different user profiles",
+          "Monitor for token failures"
+        ]
+      }
+    },
+    {
+      "id": "suggestion-3-segmentation",
+      "type": "segmentation",
+      "title": "Segment by industry",
+      "confidence": 85,
+      "description": "Create industry-specific email sequences based on user segments. Different industries (hotel, restaurant, healthcare) have unique water usage patterns and messaging needs.",
+      "estimatedImpact": "+20-35% relevance improvement",
+      "categories": ["segmentation", "industry_targeting", "strategy"],
+      "priority": "critical",
+      "industries": [
+        {
+          "category": "hospitality",
+          "profiles": ["hotel", "resort", "restaurant", "catering"],
+          "keyBenefits": [
+            "Guest satisfaction improvements",
+            "Operational cost reduction",
+            "Sustainability credentials"
+          ],
+          "painPoints": [
+            "High guest water usage",
+            "Utility cost increases",
+            "Sustainability reporting pressure"
+          ]
+        },
+        {
+          "category": "healthcare",
+          "profiles": ["hospital", "clinic", "medical_center", "senior_living"],
+          "keyBenefits": [
+            "Compliance assurance",
+            "Patient safety enhancement",
+            "Operational efficiency"
+          ],
+          "painPoints": [
+            "Regulatory compliance",
+            "High filtration costs",
+            "Water quality concerns"
+          ]
+        },
+        {
+          "category": "retail",
+          "profiles": ["retail_store", "shopping_mall", "supermarket", "warehouse"],
+          "keyBenefits": [
+            "Sustainability marketing advantage",
+            "Cost center optimization",
+            "CSR reporting improvement"
+          ],
+          "painPoints": [
+            "Utility expense control",
+            "ESG reporting requirements",
+            "Operational cost management"
+          ]
+        }
+      ],
+      "implementation": {
+        "steps": [
+          "Map current user base by industry",
+          "Create industry-specific templates",
+          "Develop targeted messaging",
+          "Test segmented campaigns",
+          "Refine based on performance"
+        ],
+        "tools": ["User classification system", "Template variation engine", "Analytics tracking"],
+        "timeline": "5-7 days full implementation"
+      },
+      "expectedResults": {
+        "openRateTarget": "40%",
+        "clickRateTarget": "15%",
+        "conversionRateTarget": "8%",
+        "bestPractices": [
+          "Use industry-specific terminology",
+          "Include relevant case studies",
+          "Address unique pain points per industry",
+          "Create separate email flows per segment"
+        ]
+      }
+    }
+  ],
+  
+  "analyticsInsights": {
+    "currentPerformance": {
+      "welcomeEmail": {
+        "openRate": 27,
+        "clickRate": 6.5,
+        "unsubscribeRate": 1.2
+      },
+      "educationEmail": {
+        "openRate": 22,
+        "clickRate": 8.3,
+        "unsubscribeRate": 2.1
+      },
+      "caseStudyEmail": {
+        "openRate": 19,
+        "clickRate": 12.1,
+        "unsubscribeRate": 1.8
+      },
+      "offerEmail": {
+        "openRate": 31,
+        "clickRate": 15.7,
+        "unsubscribeRate": 3.2
+      }
+    },
+    "benchmarks": {
+      "industry_average": {
+        "openRate": 21.3,
+        "clickRate": 2.5,
+        "unsubscribeRate": 0.1
+      }
+    }
+  },
+  
+  "nextSteps": [
+    "Implement A/B testing framework for subject lines",
+    "Enhance user data collection for better personalization",
+    "Create industry segment campaigns",
+    "Monitor and iterate based on results",
+    "Add more advanced personalization tokens"
+  ]
+}

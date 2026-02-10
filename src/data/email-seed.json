@@ -1,0 +1,100 @@
+{
+  "nexaguaEmailDrip": {
+    "campaignName": "NexAgua Welcome & Nurture Series",
+    "description": "Automated email drip campaign for new NexAgua leads",
+    "emails": [
+      {
+        "id": "email-1-welcome",
+        "name": "Welcome Series",
+        "day": 0,
+        "subject": "Welcome to NexAgua - Your Water Solutions Journey Starts Here",
+        "type": "welcome",
+        "content": {
+          "intro": "Welcome to the NexAgua family! We're excited to help you discover innovative water solutions for your business.",
+          "body": "Your journey with us begins with understanding how our commercial water systems can transform your operations.",
+          "cta": "Explore Our Solutions",
+          "personalization": ["{{first_name}}", "{{company_name}}", "{{signup_source}}"]
+        },
+        "template": "welcome-template",
+        "tracking": {
+          "trackOpens": true,
+          "trackClicks": true,
+          "trackLink": "https://nexagua.com/onboarding"
+        }
+      },
+      {
+        "id": "email-2-education",
+        "name": "Educational Content",
+        "day": 3,
+        "subject": "3 Ways NexAgua Cuts Your Water Costs by 40%",
+        "type": "education",
+        "content": {
+          "intro": "Let us show you exactly how businesses like yours are saving money with NexAgua.",
+          "body": "Our case studies reveal the top 3 strategies that deliver consistent 30-40% water cost reductions.",
+          "cta": "Get the Case Studies",
+          "personalization": ["{{first_name}}", "{{industry}}", "{{company_size}}"],
+          "educational_modules": [
+            "ROI calculator link",
+            "Industry-specific water audit",
+            "Implementation timeline"
+          ]
+        },
+        "template": "education-template",
+        "tracking": {
+          "trackOpens": true,
+          "trackClicks": true,
+          "trackLink": "https://nexagua.com/case-studies"
+        }
+      },
+      {
+        "id": "email-3-case-study",
+        "name": "Case Study",
+        "day": 7,
+        "subject": "How Hotel California Cut Water Costs 38% with NexAgua",
+        "type": "case-study",
+        "content": {
+          "intro": "Here's the exact 90-day transformation that Hotel California experienced with their water systems.",
+          "body": "Before: $12,000/month water costs. After: $7,400/month. Here's how we did it...",
+          "cta": "Book My Consultation",
+          "personalization": ["{{first_name}}", "{{industry}}", "{{company_location}}"],
+          "metrics": {
+            "costReduction": "38%",
+            "savings": "$4,600/month",
+            "paybackPeriod": "4.2 months"
+          }
+        },
+        "template": "case-study-template",
+        "tracking": {
+          "trackOpens": true,
+          "trackClicks": true,
+          "trackCTA": true
+        }
+      },
+      {
+        "id": "email-4-offer-trial",
+        "name": "Offer/Trial",
+        "day": 14,
+        "subject": "Ready to Try NexAgua? 30-Day Trial + $500 Setup Credit",
+        "type": "offer",
+        "content": {
+          "intro": "You've seen the possibilities. Now it's time to experience them firsthand.",
+          "body": "Start your 30-day NexAgua trial with $500 in setup credits - no commitment required.",
+          "cta": "Start Free Trial",
+          "offer_details": {
+            "trial_duration": "30 days",
+            "setup_credit": "$500",
+            "commitment": "none",
+            "included": "Full system setup, training, support"
+          },
+          "personalization": ["{{first_name}}", "{{company_name}}", "{{trial_deadline}}"]
+        },
+        "template": "offer-template",
+        "tracking": {
+          "trackOpens": true,
+          "trackClicks": true,
+          "trackConversions": true
+        }
+      }
+    ]
+  }
+}
