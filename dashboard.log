@@ -15,3 +15,9 @@
  ✓ Compiled /api/activity/route in 81ms (281 modules)
 ✓ Database initialized
  ✓ Compiled /api/agents/route in 134ms (265 modules)
+ ✓ Compiled /api/activity/route in 117ms (267 modules)
+✓ Database initialized
+ ✓ Compiled in 79ms (268 modules)
+✓ Database initialized
+ ✓ Compiled in 148ms (268 modules)
+[DB] Connected to /home/alb/.openclaw/workspace/mission-control/mission-control.db
