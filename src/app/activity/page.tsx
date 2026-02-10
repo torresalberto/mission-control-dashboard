@@ -2,261 +2,229 @@
 
 import { useState, useEffect } from 'react'
 
-interface ActivityItem {
-  id: string
-  type: 'director' | 'agent'
-  agent: string
-  action: string
-  description: string
-  status: 'running' | 'completed' | 'error' | 'pending'
-  timestamp: string
-  display_time: string
-  duration?: string
+interface OpenClawSession {
+  sessionKey: string
+  model: string
+  status: 'running' | 'completed' | 'error'
+  task: string
+  startTime: string
+  endTime?: string
+  runtime?: number
+  lastMessage?: string
+  error?: string
 }
 
-interface ActivityResponse {
-  activities: ActivityItem[]
-  summary: {
-    director_actions: number
-    agent_actions: number
-    total_duration: string
-    last_update: string
-  }
+interface DirectorStatus {
+  operation: string
+  lastUpdate: string
+  activeAgents: number
+  completedAgents: number
+  totalAgents: number
+}
+
+interface LiveActivityResponse {
+  director: DirectorStatus
+  agents: OpenClawSession[]
+  timestamp: string
+  source: 'openclaw-gateway' | 'mock-gateway'
 }
 
 export default function ActivityPage() {
-  const [filter, setFilter] = useState<'all' | 'director' | 'agent'>('all')
-  const [activities, setActivities] = useState<ActivityItem[]>([])
+  const [data, setData] = useState<LiveActivityResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastUpdate, setLastUpdate] = useState<string>('Never')
 
-  // Simple fetch function using static JSON
-  async function fetchActivities() {
+  async function fetchLiveActivity() {
     try {
       setLoading(true)
       setError(null)
       
-      // Try static file first (works on Vercel)
-      let response
-      try {
-        response = await fetch('/activity.json?v=' + Date.now())
-      } catch {
-        // Fallback to development data
-        response = { activities: [] }
+      // Fetch from live endpoint
+      const response = await fetch('/api/activity/live?v=' + Date.now())
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
       
-      let data: ActivityResponse
-      
-      if (response.ok) {
-        data = await response.json()
-      } else {
-        // Use mock data for development
-        data = {
-          activities: [
-            {
-              id: 'mock_1',
-              type: 'director',
-              agent: 'Director',
-              action: 'Task Analysis',
-              description: 'Breaking into micro-tasks: generate static activity feed',
-              status: 'completed',
-              timestamp: new Date().toISOString(),
-              display_time: new Date().toLocaleTimeString('en-US', { 
-                hour: '2-digit', minute: '2-digit',
-                hour12: false 
-              }),
-              duration: '3s'
-            },
-            {
-              id: 'mock_2',
-              type: 'agent',
-              agent: 'K2.5-Think',
-              action: 'Architecture Design',
-              description: 'Designing simple static file approach for Vercel',
-              status: 'completed',
-              timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-              display_time: '10:25',
-              duration: '2m 15s'
-            }
-          ],
-          summary: {
-            director_actions: 1,
-            agent_actions: 1,
-            total_duration: '2m 18s',
-            last_update: new Date().toLocaleTimeString()
-          }
-        }
-      }
-      
-      setActivities(data.activities)
+      const liveData: LiveActivityResponse = await response.json()
+      setData(liveData)
+      setLastUpdate(new Date().toLocaleTimeString())
     } catch (err) {
-      console.error('Failed to load activities:', err)
-      setError('Unable to load activity feed')
+      console.error('Failed to fetch live activity:', err)
+      setError('Unable to connect to OpenClaw Gateway')
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchActivities()
-    
-    // Auto-refresh every 10 seconds - no rate limit risk with static files
-    const interval = setInterval(fetchActivities, 10000)
+    fetchLiveActivity()
+    // Poll every 5 seconds for live updates
+    const interval = setInterval(fetchLiveActivity, 5000)
     return () => clearInterval(interval)
   }, [])
 
-  const filteredActivities = activities.filter(activity => 
-    filter === 'all' || activity.type === filter
-  )
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'text-green-400'
-      case 'running': return 'text-blue-400'
-      case 'error': return 'text-red-400'
-      case 'pending': return 'text-yellow-400'
-      default: return 'text-gray-400'
-    }
+  if (loading && !data) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-gray-400 mt-4">Connecting to OpenClaw Gateway...</p>
+        </div>
+      </div>
+    )
   }
 
-  const getStatusBg = (status: string) => {
-    switch (status) {
-      case 'completed': return 'bg-green-500/10'
-      case 'running': return 'bg-blue-500/10'
-      case 'error': return 'bg-red-500/10'
-      case 'pending': return 'bg-yellow-500/10'
-      default: return 'bg-gray-500/10'
-    }
+  if (error && !data) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center text-red-400">
+          <p>{error}</p>
+          <button 
+            onClick={fetchLiveActivity}
+            className="mt-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 text-white"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    )
   }
+
+  const agents = data?.agents || []
+  const runningAgents = agents.filter(a => a.status === 'running')
+  const completedAgents = agents.filter(a => a.status === 'completed')
+  const errorAgents = agents.filter(a => a.status === 'error')
 
   return (
-    <div className="h-full overflow-hidden bg-navy-900">
-      <div className="h-full flex flex-col">
-        {/* Header */}
-        <div className="border-b border-navy-700 px-6 py-4 bg-navy-800">
+    <div className="min-h-screen bg-gray-900 text-white p-6">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          🔴 Live Activity Monitor
+          {data?.source === 'openclaw-gateway' && (
+            <span className="text-sm bg-green-600 px-2 py-1 rounded">LIVE</span>
+          )}
+          {data?.source === 'mock-gateway' && (
+            <span className="text-sm bg-yellow-600 px-2 py-1 rounded">OFFLINE</span>
+          )}
+        </h1>
+        <p className="text-gray-400 text-sm mt-1">
+          Last update: {lastUpdate} | Auto-refresh every 5s
+        </p>
+      </div>
+
+      {/* Director Status */}
+      {data?.director && (
+        <div className="bg-blue-900/30 border border-blue-700 rounded-lg p-4 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold text-white flex items-center">
-                Activity Monitor
-                <span className="ml-2 text-sm font-normal text-gray-400">
-                  ({activities.length} activities)
-                </span>
-              </h1>
-              <p className="text-sm text-gray-400 mt-1">
-                Tracking Director decisions and agent executions
+              <h2 className="text-lg font-semibold text-blue-300 flex items-center gap-2">
+                🎯 Director
+              </h2>
+              <p className="text-gray-300 mt-1">{data.director.operation}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Updated: {new Date(data.director.lastUpdate).toLocaleTimeString()}
               </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-300">Auto-refreshing</span>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-blue-400">{data.director.activeAgents}</p>
+              <p className="text-xs text-gray-400">active</p>
             </div>
           </div>
-        </div>
-
-        {/* Filters */}
-        <div className="border-b border-navy-700 px-6 py-3 bg-navy-800/50">
-          <div className="flex space-x-2">
-            {(['all', 'director', 'agent'] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setFilter(type)}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors font-medium ${
-                  filter === type
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-navy-600/50 text-gray-300 hover:bg-navy-500/50'
-                }`}
-              >
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-                ({activities.filter(a => a.type === type || type === 'all').length})
-              </button>
-            ))}
+          <div className="flex gap-4 mt-3 text-sm">
+            <span className="text-yellow-400">
+              ⚡ {data.director.totalAgents} total
+            </span>
+            <span className="text-green-400">
+              ✅ {data.director.completedAgents} completed
+            </span>
           </div>
         </div>
+      )}
 
-        {/* Main Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          {loading && !activities.length ? (
-            <div className="text-center py-12">
-              <div className="animate-spin h-6 w-6 border-2 border-blue-400 border-t-transparent rounded-full mx-auto"></div>
-              <p className="text-gray-400 mt-4 text-sm">Initializing activity monitor...</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-12 text-red-300">
-              <p className="text-sm">{error}</p>
-            </div>
-          ) : filteredActivities.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-400 text-sm">No activities to display</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {filteredActivities.map((activity) => (
-                <ActivityCard key={activity.id} activity={activity} />
-              ))}
-            </div>
-          )}
+      {/* Agent Grid */}
+      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        🤖 Agents ({agents.length})
+      </h2>
+      
+      {agents.length === 0 ? (
+        <div className="bg-gray-800 rounded-lg p-8 text-center text-gray-500">
+          No active agents. Waiting for Director to spawn...
         </div>
+      ) : (
+        <div className="grid gap-4">
+          {agents.map((agent) => (
+            <AgentCard key={agent.sessionKey} agent={agent} />
+          ))}
+        </div>
+      )}
+
+      {/* Summary Footer */}
+      <div className="mt-6 flex gap-4 text-sm">
+        <div className="bg-green-900/30 px-4 py-2 rounded border border-green-700">
+          <span className="text-green-400 font-bold">{completedAgents.length}</span> completed
+        </div>
+        <div className="bg-yellow-900/30 px-4 py-2 rounded border border-yellow-700">
+          <span className="text-yellow-400 font-bold">{runningAgents.length}</span> running
+        </div>
+        {errorAgents.length > 0 && (
+          <div className="bg-red-900/30 px-4 py-2 rounded border border-red-700">
+            <span className="text-red-400 font-bold">{errorAgents.length}</span> failed
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-function ActivityCard({ activity }: { activity: ActivityItem }) {
-  const isDirector = activity.type === 'director'
-  
+function AgentCard({ agent }: { agent: OpenClawSession }) {
+  const statusColors = {
+    running: 'border-blue-600 bg-blue-900/20',
+    completed: 'border-green-600 bg-green-900/20',
+    error: 'border-red-600 bg-red-900/20'
+  }
+
+  const statusText = {
+    running: '🔄 RUNNING',
+    completed: '✅ COMPLETED',
+    error: '❌ ERROR'
+  }
+
+  const runtime = agent.runtime 
+    ? `${Math.floor(agent.runtime / 60)}m ${agent.runtime % 60}s`
+    : 'Unknown'
+
   return (
-    <div className={`p-3 rounded-lg border ${
-      isDirector 
-        ? 'border-blue-500/20 bg-blue-500/5' 
-        : 'border-navy-600/50 bg-navy-800/50'
-    } hover:bg-navy-700/30 transition-colors`}>
-      
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex items-center space-x-2">
-          {/* Agent/Director indicator */}
-          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-            isDirector 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-green-600 text-white'
-          }`}>
-            {isDirector ? 'D' : 'A'}
+    <div className={`border rounded-lg p-4 ${statusColors[agent.status]}`}>
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg font-mono font-bold text-gray-300">
+              {agent.sessionKey.split('-').slice(-1)[0]}
+            </span>
+            <span className={`text-xs px-2 py-1 rounded ${statusColors[agent.status]}`}>
+              {statusText[agent.status]}
+            </span>
           </div>
-          
-          <div>
-            <p className={`font-medium text-sm ${
-              isDirector ? 'text-blue-300' : 'text-green-300'
-            }`}>
-              {activity.agent}
-            </p>
-            <p className="text-xs text-gray-400 flex items-center">
-              {activity.display_time}
-            </p>
+          <p className="text-gray-300 font-medium">{agent.task}</p>
+          <p className="text-sm text-gray-500 mt-1">{agent.model}</p>
+          <div className="flex gap-4 text-xs text-gray-400 mt-2">
+            <span>⏱️ {runtime}</span>
+            <span>🕐 {new Date(agent.startTime).toLocaleTimeString()}</span>
           </div>
+          {agent.lastMessage && (
+            <p className="text-sm text-gray-400 mt-2 bg-black/20 p-2 rounded">
+              {agent.lastMessage}
+            </p>
+          )}
+          {agent.error && (
+            <p className="text-sm text-red-400 mt-2 bg-red-900/20 p-2 rounded">
+              Error: {agent.error}
+            </p>
+          )}
         </div>
-        
-        <div className={`text-xs font-medium px-2 py-1 rounded ${
-          activity.status === 'completed' 
-            ? 'text-green-300 bg-green-500/10'
-            : activity.status === 'running'
-            ? 'text-blue-300 bg-blue-500/10'
-            : 'text-yellow-300 bg-yellow-500/10'
-        }`}>
-          {activity.status.toUpperCase()}
-        </div>
-      </div>
-      
-      <div className="ml-1">
-        <h4 className="text-sm font-medium text-white mb-1">
-          {activity.action}
-        </h4>
-        <p className="text-xs text-gray-300">
-          {activity.description}
-        </p>
-        {activity.duration && (
-          <p className="text-xs text-gray-500 mt-1">
-            Duration: {activity.duration}
-          </p>
-        )}
       </div>
     </div>
   )
