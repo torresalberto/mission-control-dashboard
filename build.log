@@ -1,0 +1,47 @@
+
+> mission-control-dashboard@0.1.0 build
+> next build
+
+   ▲ Next.js 14.0.0
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/15) ...
+✓ Database initialized
+✓ Database initialized
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+   Generating static pages (11/15) 
+ ✓ Generating static pages (15/15) 
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    138 B          87.8 kB
+├ ○ /_not-found                          875 B          88.5 kB
+├ ○ /activity                            3.08 kB        90.7 kB
+├ ○ /agents                              2.78 kB        90.4 kB
+├ ○ /api/activity                        0 B                0 B
+├ ○ /api/agents                          0 B                0 B
+├ ○ /api/calendar                        0 B                0 B
+├ λ /api/projects                        0 B                0 B
+├ λ /api/search                          0 B                0 B
+├ λ /api/suggestions/[id]/approve        0 B                0 B
+├ λ /api/suggestions/[id]/decline        0 B                0 B
+├ λ /api/suggestions/[id]/snooze         0 B                0 B
+├ ○ /archived                            2.26 kB        89.9 kB
+├ ○ /calendar                            9.72 kB        97.4 kB
+├ ○ /projects                            8.45 kB        96.1 kB
+└ ○ /search                              2.66 kB        90.3 kB
++ First Load JS shared by all            87.6 kB
+  ├ chunks/472-6f1e73f3d44cbb8c.js       32.4 kB
+  ├ chunks/fd9d1056-ba8786e806313227.js  53.3 kB
+  ├ chunks/main-app-c70e0dab161b92d9.js  231 B
+  └ chunks/webpack-63b1a20797695c63.js   1.73 kB
+
+
+○  (Static)   prerendered as static HTML
+λ  (Dynamic)  server-rendered on demand using Node.js
+

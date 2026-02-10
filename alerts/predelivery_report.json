@@ -1,0 +1,8 @@
+{"end_time": "2026-02-09T15:09:07-06:00", "project": "mission-control", "status": "failed", "errors": [
+  {
+    "test": "security",
+    "severity": "warning",
+    "error": "1 critical vulnerabilities",
+    "fix": "cd /home/alb/.openclaw/workspace/mission-control && npm audit fix --force"
+  }
+], "total_errors": 1, "can_deploy": false}

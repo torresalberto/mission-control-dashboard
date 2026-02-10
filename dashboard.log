@@ -1,0 +1,17 @@
+
+> mission-control-dashboard@0.1.0 dev
+> next dev
+
+   ▲ Next.js 14.0.0
+   - Local:        http://localhost:3000
+
+ ✓ Ready in 1728ms
+ ✓ Compiled /api/agents/route in 258ms (32 modules)
+ ○ Compiling /page ...
+ ✓ Compiled /page in 3.8s (506 modules)
+ ✓ Compiled in 357ms (254 modules)
+ ○ Compiling /activity/page ...
+ ✓ Compiled /activity/page in 910ms (507 modules)
+ ✓ Compiled /api/activity/route in 81ms (281 modules)
+✓ Database initialized
+ ✓ Compiled /api/agents/route in 134ms (265 modules)
