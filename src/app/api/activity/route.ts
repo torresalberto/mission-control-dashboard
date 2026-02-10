@@ -1,75 +1,92 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { getDb, logActivity } from '@/lib/db';
 
-export async function GET() {
+// Sample activities showing Director + Agent workflow
+function getSampleActivities() {
+  const now = new Date();
+  return [
+    {
+      id: 'director_init',
+      action: 'Director initiated',
+      details: 'Analyzing project request: "Email marketing for NexAgua"',
+      timestamp: new Date(now.getTime() - 3600000).toISOString()
+    },
+    {
+      id: 'director_delegate',
+      action: 'Director delegating',
+      details: 'Assigned to 3 agents: K2.5-Think (analysis), Kimi-Instruct (execution), Instruct-0905 (review)',
+      timestamp: new Date(now.getTime() - 3540000).toISOString()
+    },
+    {
+      id: 'agent_start_1',
+      action: 'K2.5-Think started',
+      details: 'Task: Analyze email strategy and provide recommendations',
+      timestamp: new Date(now.getTime() - 3540000).toISOString()
+    },
+    {
+      id: 'agent_start_2',
+      action: 'Kimi-Instruct started',
+      details: 'Task: Build email drip campaign with templates',
+      timestamp: new Date(now.getTime() - 3530000).toISOString()
+    },
+    {
+      id: 'agent_complete_1',
+      action: 'Instruct-0905 completed',
+      details: 'Reviewed 3 email templates in 2m 15s — validated OK',
+      timestamp: new Date(now.getTime() - 3420000).toISOString()
+    },
+    {
+      id: 'agent_complete_2',
+      action: 'Kimi-Instruct completed',
+      details: 'Built 6-email drip sequence in 4m 30s — sequences ready',
+      timestamp: new Date(now.getTime() - 3380000).toISOString()
+    },
+    {
+      id: 'director_complete',
+      action: 'Director completed',
+      details: 'All agents finished — delivering consolidated NexAgua email strategy',
+      timestamp: new Date(now.getTime() - 2900000).toISOString()
+    });
+}
+
+export async function GET(): Promise<NextResponse> {
   try {
-    // Simple static file reading - works on Vercel
-    const activityPath = path.join(process.cwd(), 'public', 'activity.json');
+    const db = await getDb();
     
+    // Try to get real activities
+    let activities: any[] = [];
     try {
-      const data = await fs.readFile(activityPath, 'utf8');
-      const jsonData = JSON.parse(data);
-      
-      return NextResponse.json({
-        ...jsonData,
-        source: 'static',
-        endpoint: '/activity.json',
-        refreshInterval: 10000
-      });
-    } catch (fileNotFound) {
-      // Return embedded simple data for development
-      const fallback = {
-        timestamp: new Date().toISOString(),
-        activities: [
-          {
-            id: 'live_director_' + Date.now(),
-            type: 'director',
-            agent: 'Director',
-            action: 'System Monitoring',
-            description: 'Direct orchestration of mission control agents',
-            status: 'completed',
-            timestamp: new Date().toISOString(),
-            display_time: new Date().toLocaleTimeString('en-US', { 
-              hour: '2-digit', minute: '2-digit', hour12: false 
-            }),
-            duration: 'instant'
-          },
-          {
-            id: 'live_agent_' + Date.now(),
-            type: 'agent',
-            agent: 'MiniMax M2.1',
-            action: 'Activity Feed Generation',
-            description: 'Creating working activity feed for Director visibility',
-            status: 'completed',
-            timestamp: new Date(Date.now() - 120000).toISOString(),
-            display_time: '22:27',
-            duration: '30s'
-          }
-        ],
-        summary: {
-          director_actions: 1,
-          agent_actions: 1,
-          total_duration: '30s',
-          last_update: new Date().toLocaleTimeString()
-        }
-      };
-      
-      return NextResponse.json({
-        ...fallback,
-        source: 'fallback',
-        cached: false
+      activities = await db.all(
+        `SELECT id, action, details, timestamp FROM activity_logs ORDER BY timestamp DESC LIMIT 50`
+      );
+    } catch (e) {
+      console.log('Using sample activities:', e);
+    }
+    
+    // If no real activities or DB error, return samples
+    if (!activities || activities.length === 0) {
+      activities = getSampleActivities();
+      return NextResponse.json({ 
+        activities, 
+        count: activities.length,
+        source: 'sample'
       });
     }
+
+    return NextResponse.json({ 
+      activities, 
+      count: activities.length,
+      source: 'database'
+    });
   } catch (error) {
-    console.error('API Error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to load activities',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        activities: []
-      },
-      { status: 500 }
-    );
+    console.error('Database error:', error);
+    // Return sample data on error
+    const activities = getSampleActivities();
+    return NextResponse.json({ 
+      activities,
+      count: activities.length,
+      source: 'sample',
+      error: 'Database error, showing sample data'
+    });
   }
 }

@@ -5,6 +5,8 @@ export function generateEmailContent(campaign: any) {
   };
 }
 
-export default {
+const AiContentGenerator = {
   generateEmailContent
 };
+
+export default AiContentGenerator;

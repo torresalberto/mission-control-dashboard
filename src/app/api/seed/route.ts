@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { initDb } from '@/lib/db';
+import { getDb, logActivity } from '@/lib/db';
 
 export async function POST(): Promise<NextResponse> {
   try {
-    const db = initDb();
+    const db = await getDb();
     
     // Insert sample projects
     await db.run(
@@ -16,56 +16,45 @@ export async function POST(): Promise<NextResponse> {
       ('Mission Control Optimizations', 'Continuous improvements to the dashboard itself', 'active', 30),
       ('MiniCPM-o-4.5 Evaluation', 'Test 9B multimodal model (vision+speech+Qwen3-8B)', 'proposed', 0)`
     );
-    
+
     // Insert sample suggestions
     await db.run(
-      `INSERT OR IGNORE INTO project_suggestions 
-       (project_id, suggestion_type, title, description, confidence, status) VALUES 
-       -- NexAgua suggestions
-       (1, 'marketing', 'Launch email campaign', 'Send targeted emails to water utility companies', 85, 'pending'),
-       (1, 'content', 'Create case studies', 'Document successful NexAgua deployments', 75, 'pending'),
-       -- Sports Picks suggestions
-       (2, 'feature', 'Add confidence scoring', 'Display confidence level for each prediction', 90, 'pending'),
-       -- Mission Control suggestions (dashboard optimizations)
-       (6, 'performance', 'Add WebSocket real-time updates', 'Live agent status without page refresh', 85, 'pending'),
-       (6, 'infrastructure', 'Move SQLite to Supabase', 'Persistent database across deployments', 90, 'pending'),
-       (6, 'ui', 'Add dark mode toggle', 'Match NexAgua brand colors (#0A2540 navy)', 75, 'pending'),
-       (6, 'responsive', 'Fix mobile agent grid', 'Better layout on small screens', 80, 'pending'),
-       (6, 'ux', 'Auto-refresh every 30s', 'Dashboard updates automatically', 70, 'pending'),
-       (6, 'export', 'Download projects as CSV/JSON', 'Data export functionality', 65, 'pending'),
-       -- MiniCPM evaluation suggestions
-       (7, 'benchmark', 'Compare vision accuracy vs Gemini', 'Test on sister photos, compare quality', 80, 'pending'),
-       (7, 'cost', 'Evaluate hosting costs', 'Can RTX 4090 run 9B efficiently?', 70, 'pending'),
-       (7, 'integration', 'Add as vision fallback', 'Use when Gemini API unavailable', 85, 'pending')`
+      `INSERT OR IGNORE INTO project_suggestions (project_id, suggestion_type, title, description, confidence, status) VALUES 
+      (1, 'marketing', 'Launch email campaign', 'Send targeted emails to water utility companies', 85, 'pending'),
+      (1, 'content', 'Create case studies', 'Document successful NexAgua deployments', 75, 'pending'),
+      (2, 'feature', 'Add confidence scoring', 'Display confidence level for each prediction', 90, 'pending'),
+      (5, 'performance', 'Add WebSocket real-time updates', 'Live agent status without page refresh', 85, 'pending'),
+      (5, 'infrastructure', 'Move SQLite to Supabase', 'Persistent database across deployments', 90, 'pending'),
+      (5, 'ui', 'Add dark mode toggle', 'Match NexAgua brand colors (#0A2540 navy)', 75, 'pending'),
+      (5, 'responsive', 'Fix mobile agent grid', 'Better layout on small screens', 80, 'pending'),
+      (5, 'ux', 'Auto-refresh every 30s', 'Dashboard updates automatically', 70, 'pending'),
+      (5, 'export', 'Download projects as CSV/JSON', 'Data export functionality', 65, 'pending'),
+      (7, 'benchmark', 'Compare vision accuracy vs Gemini', 'Test on sister photos, compare quality', 80, 'pending'),
+      (7, 'cost', 'Evaluate hosting costs', 'Can RTX 4090 run 9B efficiently?', 70, 'pending'),
+      (7, 'integration', 'Add as vision fallback', 'Use when Gemini API unavailable', 85, 'pending')`
     );
-    
-    // Log database seeding activity
-    try {
-      const db = initDb();
-      const { logActivity } = await import('@/lib/db');
-      try {
-        logActivity('database_seeded', 'Sample data loaded');
-      } catch (e) {
-        // Fallback log if logActivity not available
-        db.run(
-          'INSERT INTO activity_logs (action, details) VALUES (?, ?)',
-          ['database_seeded', 'Sample data loaded']
-        );
-      }
-    } catch (e) {
-      console.error('Failed to log seeding activity:', e);
-    }
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Database seeded: 7 projects, 12 suggestions (6 Mission Control optimizations ready to approve)' 
+
+    // Seed sample tasks
+    await db.run(
+      `INSERT OR IGNORE INTO scheduled_tasks (name, schedule, next_run, last_run, status, description, category) VALUES 
+      ('Agent Health Check', '*/5 * * * *', datetime('now', '+5 minutes'), datetime('now'), 'active', 'Monitor all agents', 'system'),
+      ('Activity Feed Update', '*/30 * * * *', datetime('now', '+30 minutes'), datetime('now'), 'active', 'Refresh activity feed', 'maintenance'),
+      ('NexAgua Email Campaign', '0 9 * * *', datetime('now', '+1 day'), datetime('now', '-1 day'), 'active', 'Send daily emails', 'nexagua')`
+    );
+
+    // Log activity
+    await logActivity('database_seeded', 'Sample data loaded: 7 projects, 12 suggestions, 3 tasks');
+
+    return NextResponse.json({
+      success: true,
+      message: 'Database seeded: 7 projects, 12 suggestions, 3 tasks'
     });
-  } catch (error: any) {
-    console.error('Seed error:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message 
-    }, { status: 500 });
+  } catch (error) {
+    console.error('Error seeding database:', error);
+    return NextResponse.json(
+      { error: 'Failed to seed database' },
+      { status: 500 }
+    );
   }
 }
 
