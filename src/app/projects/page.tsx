@@ -160,14 +160,7 @@ export default function ProjectsPage() {
                 <Database className="w-4 h-4 mr-2" />
                 Seed Database
               </button>
-              <button
-                onClick={handleCreateSampleProject}
-                className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create Sample Project
-              </button>
-            </div>
+              </div>
           </div>
         </div>
       </div>
@@ -207,13 +200,6 @@ export default function ProjectsPage() {
                   Get started by creating your first project with AI suggestions
                 </p>
                 <div className="flex justify-center space-x-3">
-                  <button
-                    onClick={handleCreateSampleProject}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Sample Project
-                  </button>
                   <button
                     onClick={handleSeedDatabase}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700"
